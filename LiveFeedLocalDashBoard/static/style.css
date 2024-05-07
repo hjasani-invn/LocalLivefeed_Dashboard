@@ -1,0 +1,52 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+#map-container {
+    height: 500px;
+    margin-bottom: 20px;
+}
+
+#values-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+#user-list {
+    list-style: none;
+    padding: 0;
+}
+
+#user-list li {
+    margin-bottom: 5px;
+}
+
+
+#assets-button-container {
+    margin-top: 20px; /* Adjust the value as needed */
+}
+
+
+
+#LiveFeedAssetSection {
+    margin-top: 20px; /* Adjust the value as needed */
+}
+
+
+/*body {*/
+/*    font-family: 'Arial', sans-serif;*/
+/*    background-color: #f0f0f0;*/
+/*    color: #333;*/
+/*}*/
+
+/*h1 {*/
+/*    color: #007bff;*/
+/*}*/
+
+/*!* Add more styles as needed *!*/

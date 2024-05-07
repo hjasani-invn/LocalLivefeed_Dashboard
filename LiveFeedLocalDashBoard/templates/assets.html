@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assets</title>
+    <!-- Include Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Include custom CSS -->
+    <link rel="stylesheet" href="static/assets.css" />
+    <!-- Link back to the LiveFeed -->
+    <a href="/" class="back-to-livefeed">Back to LiveFeed</a>
+</head>
+
+<body>
+    <h1>Assets Page</h1>
+
+
+{#    <div id="map-container" style="position: relative; height: 400px;"> <!-- Ensure the map container has a height -->#}
+    <div id="map-container" style="position: relative; height: 400px;"> <!-- Ensure the map container has a height -->
+
+        <label for="floor-select">Select Floor:</label>
+        <select id="floor-select" onchange="changeFloor()"></select>
+    </div>
+
+{#    <div class="container">#}
+{##}
+{#        <div class="checkbox-container">#}
+{#            <label><input type="checkbox" value="assetID" checked onchange="toggleColumn(0)"> Asset ID</label>#}
+{#            <label><input type="checkbox" value="assetName" checked onchange="toggleColumn(1)"> Asset Name</label>#}
+{#            <label><input type="checkbox" value="icon" checked onchange="toggleColumn(2)"> Icon</label>#}
+{#            <label><input type="checkbox" value="type" checked onchange="toggleColumn(3)"> Type</label>#}
+{#            <label><input type="checkbox" value="currentState" checked onchange="toggleColumn(4)"> Current State</label>#}
+{#            <label><input type="checkbox" value="lastSeenTime" checked onchange="toggleColumn(5)"> Last Seen (Time)</label>#}
+{#            <label><input type="checkbox" value="lastSeenFloor" checked onchange="toggleColumn(6)"> Last Seen Floor</label>#}
+{#            <label><input type="checkbox" value="lastSeenZone" checked onchange="toggleColumn(7)"> Last Seen Zone</label>#}
+{#            <label><input type="checkbox" value="lastScannedBy" checked onchange="toggleColumn(8)"> Last Scanned by</label>#}
+{#        </div>#}
+
+        <h3>Asset Information</h3>
+{#        <div class="table-container">#}
+{#            <table class="asset-table" id="asset-table">#}
+{#                <thead>#}
+{#                    <tr id="table-headers">#}
+{#                        <th class="search-header" onclick="enableSearch()">Asset Id</th>#}
+{#                        <th class="search-header"><input type="search" placeholder="Asset Id"></th>#}
+{#                        <th>Asset Name</th>#}
+{#                        <th>Icon</th>#}
+{#                        <th>Type</th>#}
+{#                        <th>#}
+{#                            <select name="types" id="assets_types">#}
+{#                                <option value="types">Type</option>#}
+{#                                <option value="types">PI</option>#}
+{#                            </select>#}
+{#                        </th>#}
+{##}
+{##}
+{#                        <th>Current State</th>#}
+{#                        <th>Last Seen (Time)</th>#}
+{#                        <th>Last Seen Floor</th>#}
+{#                        <th>Last Seen Zone</th>#}
+{#                        <th>Last Scanned by</th>#}
+{#                    </tr>#}
+{#                </thead>#}
+{#                <tbody>#}
+{#                    <tr>#}
+{#                        <td>1</td>#}
+{#                        <td>Asset 1</td>#}
+{#                        <td><img src="icon1.png" alt="Icon 1"></td>#}
+{#                        <td>Type 1</td>#}
+{#                        <td>State 1</td>#}
+{#                        <td>2024-04-17 07:00:00</td>#}
+{#                        <td>Floor 1</td>#}
+{#                        <td>Zone A</td>#}
+{#                        <td>Scanner 1</td>#}
+{#                    </tr>#}
+{#                    <!-- Add more rows as needed -->#}
+{#                </tbody>#}
+{#            </table>#}
+
+
+
+{#        <div class="table-container">#}
+{#    <table class="asset-table" id="asset-table">#}
+{#        <thead>#}
+{#            <tr id="table-headers">#}
+{#                <th class="search-header"><input type="search" placeholder="Asset Id"></th>#}
+{#                <th>Asset Name</th>#}
+{#                <th>Last Seen (Time)</th>#}
+{#            </tr>#}
+{#        </thead>#}
+{#            <tbody id="asset-table-body">#}
+{#    </table>#}
+{#</div>#}
+
+
+
+    <div id="lastScanTimesContainer"></div>
+
+    <h3>Fetch Data</h3>
+
+
+    <span id="DataBox"></span>
+
+        <select id="csvFileSelect"></select>
+        <button onclick="fetchCsvData()">Fetch CSV Data</button>
+        <button onclick="clearCsvData()">Clear Data</button>
+        <div id="csvDataBox"></div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <!-- Include Leaflet JavaScript library -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- Include Socket.IO library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <!-- Include your custom JavaScript file -->
+    <script src="../static/assets.js"></script>
+
+
+
+    <script>
+    async function fetchCsvData() {
+        const selectElement = document.getElementById('csvFileSelect');
+        const selectedFileName = selectElement.value;
+        const csvUrl = `/static/data/${selectedFileName}`;
+
+        try {
+            const response = await fetch(csvUrl);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch CSV data for ${selectedFileName}.`);
+            }
+            const csvData = await response.text();
+            document.getElementById('DataBox').textContent = csvData;
+        } catch (error) {
+            console.error(error);
+            document.getElementById('DataBox').textContent = `Error: ${error.message}`;
+        }
+    }
+
+    function clearCsvData() {
+        const DataBox = document.getElementById('DataBox');
+        if (DataBox) {
+            DataBox.textContent = ''; // Clear the content
+        } else {
+            console.error("Error: Could not find DataBox element in HTML.");
+        }
+    }
+
+    async function fetchAvailableFiles() {
+        try {
+            const response = await fetch('/available-files');
+            if (!response.ok) {
+                throw new Error('Failed to fetch available files.');
+            }
+            const availableFiles = await response.json();
+            const selectElement = document.getElementById('csvFileSelect');
+            availableFiles.forEach(fileName => {
+                const option = document.createElement('option');
+                option.value = fileName;
+                option.textContent = fileName;
+                selectElement.appendChild(option);
+            });
+        } catch (error) {
+            console.error(error);
+            document.getElementById('DataBox').textContent = `Error: ${error.message}`;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchAvailableFiles);
+    </script>
+
+
+
+{#    <script>#}
+{#    async function fetchCsvData(fileName) {#}
+{#        const csvUrl = `/static/data/${fileName}`;#}
+{##}
+{#        try {#}
+{#            const response = await fetch(csvUrl);#}
+{#            if (!response.ok) {#}
+{#                throw new Error(`Failed to fetch CSV data for ${fileName}.`);#}
+{#            }#}
+{#            const csvData = await response.text();#}
+{#            document.getElementById('csvDataBox').textContent = csvData;#}
+{#        } catch (error) {#}
+{#            console.error(error);#}
+{#            document.getElementById('csvDataBox').textContent = `Error: ${error.message}`;#}
+{#        }#}
+{#    }#}
+{##}
+{#    // Extract query parameter from URL#}
+{#    const urlParams = new URLSearchParams(window.location.search);#}
+{#    const selectedFileName = urlParams.get('file');#}
+{##}
+{#    if (selectedFileName) {#}
+{#        fetchCsvData(selectedFileName);#}
+{#    } else {#}
+{#        document.getElementById('csvDataBox').textContent = 'No CSV file selected.';#}
+{#    }#}
+{#    </script>#}
+
+
+{#<script>#}
+{##}
+{##}
+{#document.addEventListener('DOMContentLoaded', function() {#}
+{#    // Retrieve last scanned times from localStorage#}
+{#    const lastScanTimes = JSON.parse(localStorage.getItem('lastLiveFeedAssetScanTime'));#}
+{##}
+{#    // Get the table body element#}
+{#    const tbody = document.getElementById('asset-table-body');#}
+{##}
+{#    // Check if there are last scan times stored#}
+{#    if (lastScanTimes && typeof lastScanTimes === 'object') {#}
+{#        // Loop through each asset ID#}
+{#        Object.keys(lastScanTimes).forEach(assetID => {#}
+{#            // Extract last seen time and asset name for the current asset ID#}
+{#            const parts = lastScanTimes[assetID].split(';');#}
+{#            const assetName = parts[0].trim();#}
+{#            const lastSeenTime = parts[1].trim();#}
+{##}
+{#            // Create a new table row#}
+{#            const row = document.createElement('tr');#}
+{##}
+{#            // Create table cells for asset ID, asset name, and last seen time#}
+{#            const assetIDCell = document.createElement('td');#}
+{#            assetIDCell.textContent = assetID;#}
+{#            row.appendChild(assetIDCell);#}
+{##}
+{#            const assetNameCell = document.createElement('td');#}
+{#            assetNameCell.textContent = assetName;#}
+{#            row.appendChild(assetNameCell);#}
+{##}
+{#            const lastSeenTimeCell = document.createElement('td');#}
+{#            lastSeenTimeCell.textContent = lastSeenTime;#}
+{#            row.appendChild(lastSeenTimeCell);#}
+{##}
+{#            // Append the row to the table body#}
+{#            tbody.appendChild(row);#}
+{#        });#}
+{#    } else {#}
+{#        console.error('No last scan times found in localStorage or it is not an object.');#}
+{#    }#}
+{#});#}
+{##}
+{##}
+{##}
+{##}
+{##}
+{##}
+{#</script>#}
+
+
+
+
+<script>
+
+
+/*
+document.addEventListener('DOMContentLoaded', function() {
+    // Retrieve last scanned times from localStorage
+    const lastScanTime = localStorage.getItem('lastLiveFeedAssetScanTime');
+
+    // Get the container element
+    const container = document.getElementById('lastScanTimesContainer');
+
+    // Check if there are last scan times stored
+    if (lastScanTime && typeof lastScanTime === 'string') {
+        // Create a new paragraph element
+        const paragraph = document.createElement('p');
+
+        // Set the text content of the paragraph to the last scan time
+        paragraph.textContent = `Last scanned time: ${lastScanTime}`;
+
+        // Append the paragraph to the container
+        container.appendChild(paragraph);
+    } else {
+        console.error('No last scan time found in localStorage or it is not a string.');
+    }
+});
+
+ */
+
+/*
+document.addEventListener('DOMContentLoaded', function() {
+    // Retrieve last scanned times from localStorage
+    const lastScanTime = localStorage.getItem('lastLiveFeedAssetScanTime');
+
+    // Get the container element
+    const container = document.getElementById('lastScanTimesContainer');
+
+    // Check if there are last scan times stored
+    if (lastScanTime && typeof lastScanTime === 'string') {
+        // Create a new table element
+        const table = document.createElement('table');
+        table.classList.add('asset-table'); // Optionally add a CSS class to style the table
+
+        // Create a table row
+        const row = document.createElement('tr');
+
+        // Create table cells for "Asset ID" and "Last Seen Time"
+        const assetIDCell = document.createElement('td');
+        assetIDCell.textContent = 'Asset ID';
+        row.appendChild(assetIDCell);
+
+        const lastSeenTimeCell = document.createElement('td');
+        lastSeenTimeCell.textContent = 'Last Seen Time';
+        row.appendChild(lastSeenTimeCell);
+
+        // Append the row to the table
+        table.appendChild(row);
+
+        // Create another row for the data
+        const dataRow = document.createElement('tr');
+
+        // Create cells for asset ID and last seen time data
+        const assetIDDataCell = document.createElement('td');
+        assetIDDataCell.textContent = 'Asset 1'; // Replace 'Asset 1' with the actual asset ID if available
+        dataRow.appendChild(assetIDDataCell);
+
+        const lastSeenTimeDataCell = document.createElement('td');
+        lastSeenTimeDataCell.textContent = lastScanTime;
+        dataRow.appendChild(lastSeenTimeDataCell);
+
+        // Append the data row to the table
+        table.appendChild(dataRow);
+
+        // Append the table to the container
+        container.appendChild(table);
+    } else {
+        console.error('No last scan time found in localStorage or it is not a string.');
+    }
+
+
+
+});
+
+
+*/
+
+/*
+document.addEventListener('DOMContentLoaded', function() {
+    // Retrieve last scanned times from localStorage
+
+    const lastScanTime = localStorage.getItem('lastLiveFeedAssetScanTime');
+
+    // Get the container element
+    const container = document.getElementById('lastScanTimesContainer');
+
+
+
+
+    // Check if there are last scan times stored
+    if (lastScanTime && typeof lastScanTime === 'string') {
+        // Create a new table element
+        const table = document.createElement('table');
+        table.classList.add('asset-table'); // Optionally add a CSS class to style the table
+
+        // Create a table row
+        const row = document.createElement('tr');
+
+        // Create table cells for "Asset ID" and "Last Seen Time"
+        const assetIDCell = document.createElement('td');
+        assetIDCell.textContent = 'Asset ID';
+        row.appendChild(assetIDCell);
+
+        const lastSeenTimeCell = document.createElement('td');
+        lastSeenTimeCell.textContent = 'Last Seen Time';
+        row.appendChild(lastSeenTimeCell);
+
+        // Append the row to the table
+        table.appendChild(row);
+
+        // Create another row for the data
+        const dataRow = document.createElement('tr');
+
+        // Create cells for asset ID and last seen time data
+        const assetIDDataCell = document.createElement('td');
+        assetIDDataCell.textContent = 'Asset 1'; // Replace 'Asset 1' with the actual asset ID if available
+        dataRow.appendChild(assetIDDataCell);
+
+        const lastSeenTimeDataCell = document.createElement('td');
+        lastSeenTimeDataCell.textContent = lastScanTime;
+        dataRow.appendChild(lastSeenTimeDataCell);
+
+        // Append the data row to the table
+        table.appendChild(dataRow);
+
+        // Append the table to the container
+        container.appendChild(table);
+    } else {
+        console.error('No last scan time found in localStorage or it is not a string.');
+    }
+
+    // Retrieve last known location from localStorage
+    {#const lastKnownLocation = JSON.parse(localStorage.getItem('lastKnownLocation'));#}
+
+
+});
+*/
+
+
+/*
+document.addEventListener('DOMContentLoaded', function() {
+    // Retrieve last scanned times from localStorage
+    const lastScanTimeStr = localStorage.getItem('lastLiveFeedAssetScanTime');
+
+    // Get the container element
+    const container = document.getElementById('lastScanTimesContainer');
+
+    // Initialize the map
+    const mapContainer = L.map('map-container').setView([51.06516187, -114.144868], 13);
+
+    // Add a tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(mapContainer);
+
+    // Check if there is a last known location stored
+    if (lastScanTimeStr && typeof lastScanTimeStr === 'string') {
+        // Parse the JSON string to get the object
+        const lastScanTimeObj = JSON.parse(lastScanTimeStr);
+
+        if (lastScanTimeObj && typeof lastScanTimeObj === 'object') {
+            // Extract user, latitude, and longitude values
+            const { user, latitude, longitude } = lastScanTimeObj;
+
+            // Create a marker at the last known location
+            const marker = L.marker([parseFloat(latitude), parseFloat(longitude)]);
+
+            // Add a tooltip to the marker showing the user's location
+            marker.bindTooltip(`User: ${user}`);
+
+            // Add the marker to the map
+            marker.addTo(mapContainer);
+
+            // Set the view of the map to the marker's location
+            mapContainer.setView([parseFloat(latitude), parseFloat(longitude)], 13);
+        } else {
+            console.error('No valid last known location found in localStorage or it is not an object.');
+        }
+    } else {
+        console.error('No last scan time found in localStorage or it is not a string.');
+    }
+
+    // Check if there are last scan times stored
+    if (lastScanTimeStr && typeof lastScanTimeStr === 'string') {
+        // Create a new table element
+        const table = document.createElement('table');
+        table.classList.add('asset-table'); // Optionally add a CSS class to style the table
+
+        // Create a table row
+        const row = document.createElement('tr');
+
+        // Create table cells for "Asset ID" and "Last Seen Time"
+        const assetIDCell = document.createElement('td');
+        assetIDCell.textContent = 'Asset ID';
+        row.appendChild(assetIDCell);
+
+        const lastSeenTimeCell = document.createElement('td');
+        lastSeenTimeCell.textContent = 'Last Seen Time';
+        row.appendChild(lastSeenTimeCell);
+
+        // Append the row to the table
+        table.appendChild(row);
+
+        // Create another row for the data
+        const dataRow = document.createElement('tr');
+
+        // Create cells for asset ID and last seen time data
+        const assetIDDataCell = document.createElement('td');
+        assetIDDataCell.textContent = 'Asset 1'; // Replace 'Asset 1' with the actual asset ID if available
+        dataRow.appendChild(assetIDDataCell);
+
+        const lastSeenTimeDataCell = document.createElement('td');
+        lastSeenTimeDataCell.textContent = lastScanTimeStr;
+        dataRow.appendChild(lastSeenTimeDataCell);
+
+        // Append the data row to the table
+        table.appendChild(dataRow);
+
+        // Append the table to the container
+        container.appendChild(table);
+    } else {
+        console.error('No last scan time found in localStorage or it is not a string.');
+    }
+});
+
+*/
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Retrieve last scanned times from localStorage
+    const lastScanTimeStr = localStorage.getItem('lastLiveFeedAssetScanTime');
+
+    // Get the container element
+    const container = document.getElementById('lastScanTimesContainer');
+
+
+
+
+    // Initialize the map
+    const mapContainer = L.map('map-container').setView([51.06516187, -114.144868], 13);
+
+    // Add a tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(mapContainer);
+
+    // Check if there is a last known location stored
+    if (lastScanTimeStr && typeof lastScanTimeStr === 'string') {
+        // Parse the JSON string to get the object
+        const lastScanTimeObj = JSON.parse(lastScanTimeStr);
+
+        if (lastScanTimeObj && typeof lastScanTimeObj === 'object') {
+            // Extract user, latitude, and longitude values
+            const { user, latitude, longitude } = lastScanTimeObj;
+
+            // Create a marker at the last known location
+            const marker = L.marker([parseFloat(latitude), parseFloat(longitude)]);
+
+            // Add a tooltip to the marker showing the user's location
+            marker.bindTooltip(`User: ${user}`);
+
+            // Add the marker to the map
+            marker.addTo(mapContainer);
+
+            // Set the view of the map to the marker's location
+            mapContainer.setView([parseFloat(latitude), parseFloat(longitude)], 13);
+        } else {
+            console.error('No valid last known location found in localStorage or it is not an object.');
+        }
+    } else {
+        console.error('No last scan time found in localStorage or it is not a string.');
+    }
+
+
+
+
+
+    // Check if there are last scan times stored
+    if (lastScanTimeStr && typeof lastScanTimeStr === 'string') {
+        // Parse the JSON string to get the object
+        const lastScanTimeObj = JSON.parse(lastScanTimeStr);
+
+        if (lastScanTimeObj && typeof lastScanTimeObj === 'object') {
+            // Create a new table element
+            const table = document.createElement('table');
+            table.classList.add('asset-table'); // Optionally add a CSS class to style the table
+
+            // Create table headers
+            const headers = ['Asset ID', 'User', 'Last Scan Time', 'Latitude', 'Longitude'];
+            const headerRow = document.createElement('tr');
+            headers.forEach(headerText => {
+                const headerCell = document.createElement('th');
+                headerCell.textContent = headerText;
+                headerRow.appendChild(headerCell);
+            });
+            table.appendChild(headerRow);
+
+            // Create a row for the data
+            const dataRow = document.createElement('tr');
+
+            // Extract user from asset ID
+            const assetID = lastScanTimeObj.user;
+            const user = `data_${parseInt(assetID.split('_')[1])}`;
+
+            // Populate cells with data
+            const assetIDCell = document.createElement('td');
+            assetIDCell.textContent = assetID;
+            dataRow.appendChild(assetIDCell);
+
+            const userCell = document.createElement('td');
+            userCell.textContent = user;
+            dataRow.appendChild(userCell);
+
+            const lastScanTimeCell = document.createElement('td');
+            lastScanTimeCell.textContent = lastScanTimeObj.lastScanTime;
+            dataRow.appendChild(lastScanTimeCell);
+
+            const latitudeCell = document.createElement('td');
+            latitudeCell.textContent = lastScanTimeObj.latitude;
+            dataRow.appendChild(latitudeCell);
+
+            const longitudeCell = document.createElement('td');
+            longitudeCell.textContent = lastScanTimeObj.longitude;
+            dataRow.appendChild(longitudeCell);
+
+            // Append the data row to the table
+            table.appendChild(dataRow);
+
+            // Append the table to the container
+            container.appendChild(table);
+        } else {
+            console.error('No valid last scan time found in localStorage or it is not an object.');
+        }
+    } else {
+        console.error('No last scan time found in localStorage or it is not a string.');
+    }
+});
+
+
+
+
+
+
+</script>
+
+
+
+
+
+
+</body>
+
+</html>

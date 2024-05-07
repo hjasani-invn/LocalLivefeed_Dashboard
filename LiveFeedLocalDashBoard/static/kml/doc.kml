@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+	<name>ICA_HLS-Multifloor_w_Boundaries.kmz</name>
+	<visibility>0</visibility>
+	<open>1</open>
+	<Folder>
+		<name>ICA_HLS-Multifloor</name>
+		<visibility>0</visibility>
+		<open>1</open>
+		<GroundOverlay>
+			<name>F4</name>
+			<visibility>0</visibility>
+			<open>1</open>
+			<Icon>
+				<href>files/ICA_0.png</href>
+				<viewBoundScale>0.75</viewBoundScale>
+			</Icon>
+			<LatLonBox>
+				<north>51.0652269994906</north>
+				<south>51.06497386242536</south>
+				<east>-114.1446146646332</east>
+				<west>-114.1452969946545</west>
+				<rotation>57.03282928466797</rotation>
+			</LatLonBox>
+		</GroundOverlay>
+		<GroundOverlay>
+			<name>F2</name>
+			<visibility>0</visibility>
+			<Icon>
+				<href>files/Cambrian-2nd Floor-1.png</href>
+				<viewBoundScale>0.75</viewBoundScale>
+			</Icon>
+			<LatLonBox>
+				<north>51.06569921232516</north>
+				<south>51.064941552419</south>
+				<east>-114.1443883544449</east>
+				<west>-114.1456981324624</west>
+				<rotation>-33.7503662109375</rotation>
+			</LatLonBox>
+		</GroundOverlay>
+		<GroundOverlay>
+			<name>F1</name>
+			<visibility>0</visibility>
+			<color>f0ffffff</color>
+			<Icon>
+				<href>files/ICA_Main_Lobby_Full_Cleaned.png</href>
+				<viewBoundScale>0.75</viewBoundScale>
+			</Icon>
+			<LatLonBox>
+				<north>51.0657623108906</north>
+				<south>51.06487938489982</south>
+				<east>-114.1444948954057</east>
+				<west>-114.1456073103954</west>
+				<rotation>146.3437194824218</rotation>
+			</LatLonBox>
+		</GroundOverlay>
+		<GroundOverlay>
+			<name>P1</name>
+			<visibility>0</visibility>
+			<open>1</open>
+			<Icon>
+				<href>files/2017-05-25_CAMBRIAN_parkade p1_0.png</href>
+				<viewBoundScale>0.75</viewBoundScale>
+			</Icon>
+			<LatLonBox>
+				<north>51.06558320603198</north>
+				<south>51.06483520220259</south>
+				<east>-114.1442813064297</east>
+				<west>-114.1461010066094</west>
+				<rotation>56.27328491210938</rotation>
+			</LatLonBox>
+		</GroundOverlay>
+		<GroundOverlay>
+			<name>P2</name>
+			<visibility>0</visibility>
+			<Icon>
+				<href>files/2017-05-25_CAMBRIAN_parkade p2_0.png</href>
+				<viewBoundScale>0.75</viewBoundScale>
+			</Icon>
+			<LatLonBox>
+				<north>51.06566393012278</north>
+				<south>51.06494767289472</south>
+				<east>-114.1442202751468</east>
+				<west>-114.1459612785269</west>
+				<rotation>56.29601287841797</rotation>
+			</LatLonBox>
+		</GroundOverlay>
+	</Folder>
+</Document>
+</kml>

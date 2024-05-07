@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Feed Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="../static/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.label/0.2.4/leaflet.label.css" />
+
+    <!-- Navigation bar with tabs -->
+    <div class="navbar">
+        <a href="/assets" class="tab">Assets</a>
+        <a href="/" class="tab">LiveFeed</a>
+        <!-- Add more tabs for additional pages as needed -->
+    </div>
+
+
+
+</head>
+<body>
+    <h1>Livefeed Local Dashboard and Diagnostic Tool</h1>
+    <label for="floor-select">Select Floor:</label>
+    <select id="floor-select" onchange="changeFloor()"></select>
+    <div id="map-container" style="height: 400px;"></div>
+    <div id="values-container">
+        <p><strong>Latitude:</strong> <span id="latitude"></span></p>
+        <p><strong>Longitude:</strong> <span id="longitude"></span></p>
+        <p><strong>Floor Number:</strong> <span id="floor-number"></span></p>
+        <p><strong>Devices/CSVs Form Data Comming:</strong></p>
+        <ul id="user-list"></ul>
+    </div>
+    <div id="csv-content-container"></div>
+    <div id="user-checkboxes">
+        <div id="checkbox-container"></div>
+        <button id="playButton" onclick="togglePlayback()">Play</button>
+        <button id="liveFeedButton" onclick="toggleLiveFeed()">LiveFeed</button>
+        <button id="clearPositionsButton" onclick="clearPositions()">Clear Positions</button>
+
+{#        <button id="assetButton" onclick="asset()">Assets</button>#}
+
+
+    </div>
+
+
+    <div id="assets-button-container">
+        <div id="checkbox-container-for-assets"></div>
+        <button id="assetbtn" onclick="loadAssets()">Assets</button>
+        <button id="clearAssetsButton" onclick="clearAssets()">Clear Assets</button>
+
+        <div id="lastScanTimesContainer"></div>
+
+{#    <a href="/assets?selectedValues=value1,value2,value3">View Asset Data</a>#}
+
+    </div>
+
+
+    <!-- Asset Livefeed Section -->
+    <div id="LiveFeedAssetSection">
+        <div id="checkboxes_LiveFeedAssetSection"></div>
+        <button id="LiveFeedAssetBtn" onclick="StartLiveFeedAsset()">Start Livefeed Asset</button>
+        <button id="PauseStopBtn" onclick="pauseStop()">Pause / Stop</button>
+        <button id="findAssetBtn" onclick="FindAsset()">Find Asset</button>
+        <button id="clearTrajectoryBtn" onclick="ClearTrajectory()">Clear Trajectory</button>
+
+        <div id="lastLiveFeedAssetScanTimeContainer"></div>
+    </div>
+
+
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-rotatedmarker"></script>
+    <script src="https://unpkg.com/leaflet-imageoverlay-rotated"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.label/0.2.4/leaflet.label.js"></script>
+    <script src="static/app.js"></script>
+</body>
+</html>

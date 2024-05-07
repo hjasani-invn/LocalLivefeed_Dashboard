@@ -1,0 +1,135 @@
+Metadata-Version: 2.1
+Name: fionautil
+Version: 0.7.0
+Summary: helpful utilities for working with geodata with Fiona
+Home-page: http://github.com/fitnr/fionautil/
+Author: Neil Freeman
+Author-email: contact@fakeisthenewreal.org
+License: GNU General Public License v3 (GPLv3)
+Keywords: GIS
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Operating System :: OS Independent
+Requires-Dist: fiona (<2.0,>=1.7.1)
+Provides-Extra: azimuth
+Requires-Dist: pyproj (<1.10,>=1.9.5) ; extra == 'azimuth'
+Provides-Extra: dissolve
+Requires-Dist: shapely (<2.0,>=1.5.0) ; extra == 'dissolve'
+Provides-Extra: length
+Requires-Dist: shapely (<2.0,>=1.5.0) ; extra == 'length'
+Provides-Extra: shape
+Requires-Dist: shapely (<2.0,>=1.5.0) ; extra == 'shape'
+Provides-Extra: shapify
+Requires-Dist: shapely (<2.0,>=1.5.0) ; extra == 'shapify'
+Provides-Extra: speed
+Requires-Dist: numpy (>1.9) ; extra == 'speed'
+
+fionautil
+~~~~~~~~~
+
+Utilities for working with geodata with
+`Fiona <https://pypi.python.org/pypi/Fiona/1.5.0>`__.
+
+By default, the only prerequisite is Fiona itself.
+
+By default, the package installs without shapely. A small number of
+functions, marked below, do require shapely. To use these function,
+install with ``pip install fionautil[functionname]`` or just separately
+install shapely.
+
+Contents
+--------
+
+drivers
+~~~~~~~
+
+Tools for fetching the driver name, given a file suffix
+
+-  from\_file
+-  From suffix
+
+feature
+~~~~~~~
+
+-  field\_contains\_test (test if a feature's properties has certain
+   key:value pairs)
+-  togeojson (return a geojson-ready object)
+-  shapify (requires shapely)
+-  length (requires shapely)
+-  compound
+
+geometry
+~~~~~~~~
+
+-  endpoints (for polyline features)
+-  startpoint (for polyline features)
+-  endpoint (for polyline features)
+-  azimuth (between the start and end of a polyline)
+-  disjointed
+-  explodepoints
+-  explodesegments
+-  exploderings
+-  countpoints
+-  countsegments
+-  roundgeometry - round all coordinates in a geometry to a given
+   precision
+
+layer
+~~~~~
+
+Most of these tools mimic builtin python itertools.
+
+-  ffilter
+-  ffilterfalse
+-  fmap
+-  fchain
+-  freduce
+-  fslice
+-  fzip
+-  length Total length of linear features in a file's native projection
+   or the given Proj object
+-  meta (returns a layer's meta attribute)
+-  meta\_complete (returns the meta attribute with addional metadata,
+   e.g. bounds)
+-  bounds (returns a layer's bounds)
+-  find (return a feature that matches a particular key=value)
+
+measure
+~~~~~~~
+
+-  distance (between two coordinates)
+-  azimuth (between two coordinates)
+-  signed\_area
+-  clockwise (shortcut for checking if signed\_area is >= 0)
+-  counterclockwise (shortcut for checking if signed\_area is < 0)
+-  azimuth\_distance (returns both azimuth and distance between two
+   points)
+-  intersect (check if two planar line segments intersect)
+-  onsegment (check if a point lines on a line segment)
+-  intersectingbounds (check if two bounding boxes intersect)
+
+round
+~~~~~
+
+-  geometry - round all coordinates in a geometry to a specified
+   precision
+-  feature
+
+scale
+~~~~~
+
+Utilities for scaling a feature or geometry by a given constant. Goes
+faster with Numpy installed.
+
+-  geometry
+-  scale\_rings
+-  scale - scales a list of coordinates
+-  feature - scale the geometry of a feature
+
+
+
