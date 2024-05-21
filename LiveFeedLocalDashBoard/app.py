@@ -1,7 +1,4 @@
-
-
-"""new code for marker - MARKER on display"""
-
+import asyncio
 import os
 import shutil
 import threading
@@ -106,86 +103,10 @@ def save_to_output_file(file_name, data):
 
 
 
-
-
-# def emit_values():
-#     global latitude, longitude, floor_number, user_lines_count
-#     while True:
-#         data = output_queue.get()
-#         if data is None:
-#             break
-#         file_name, row, start_time, current_time = data
-#
-#         # Replace these values with the actual values from your CSV file or COMM port
-#         latitude, longitude, floor_number = row
-#
-#         # Emit values to the connected clients
-#         socketio.emit('update_values', {'latitude': latitude, 'longitude': longitude, 'floorNumber': floor_number})
-#
-#         # Update user lines count for the specific CSV file
-#         user_lines_count[file_name] = user_lines_count.get(file_name, 0) + 1
-#
-#
-#         # Emit user lines count for each CSV file
-#         socketio.emit('update_users_info', {'users': user_lines_count})
-#
-#
-#         # Count total number of files
-#         total_files = len([f for f in os.listdir(DATA_DIR) if os.path.isfile(os.path.join(DATA_DIR, f))])
-#         # print(f"---------Total files: {total_files}---------")
-#         # print(type(total_files))
-#         # Emit user lines count and the total number of users
-#         socketio.emit('update_users_info_for_checklist', {'totalFiles': total_files})
-#
-#
-#
-#         # Save to output file
-#         save_to_output_file(file_name, row)
-#
-#         # map['latitude'] = latitude
-#         # map['longitude'] = longitude
-#         # map['floorNumber'] = floor_number
-#         # socketio.emit('update_map', {'map': map})
-#
-#         # Introduce a delay to slow down updates
-#         time.sleep(0.01)
-#
-#         # Update map separately
-#         map_data = {'latitude': latitude, 'longitude': longitude, 'floorNumber': floor_number}
-#         socketio.emit('update_map', {'map': map_data})
-#         # print(f"Sending update - Latitude: {latitude}, Longitude: {longitude}, Floor Number: {floor_number}")
-
-
-
-# def emit_values():
-#     global latitude, longitude, floor_number, user_lines_count, selected_floor, selected_users
-#     while True:
-#         data = output_queue.get()
-#         if data is None:
-#             break
-#         file_name, row, start_time, current_time = data
-#         latitude, longitude, floor_number = row
-#
-#         if selected_floor is not None and selected_users and floor_mapping[selected_floor] == floor_number:
-#             # Emit values only if the selected floor and user are chosen
-#             socketio.emit('update_values', {'latitude': latitude, 'longitude': longitude, 'floorNumber': floor_number})
-#             user_lines_count[file_name] = user_lines_count.get(file_name, 0) + 1
-#             socketio.emit('update_users_info', {'users': user_lines_count})
-#
-#             # Save to output file
-#             save_to_output_file(file_name, row)
-#
-#             # Update map separately
-#             map_data = {'latitude': latitude, 'longitude': longitude, 'floorNumber': floor_number}
-#             socketio.emit('update_map', {'map': map_data})
-#
-#         time.sleep(0.01)
-
-
-
-
 def emit_values():
     global latitude, longitude, floor_number, user_lines_count
+    counter = 0
+
     while True:
         data = output_queue.get()
         if data is None:
@@ -226,6 +147,9 @@ def emit_values():
         # Introduce a delay to slow down updates
         time.sleep(0.01)
         # time.sleep(10)
+        # counter += 1
+        # if counter % 100 == 0:
+        #     time.sleep(0.01)
 
         # Update map separately
         map_data = {'latitude': latitude, 'longitude': longitude, 'floorNumber': floor_number}
@@ -236,75 +160,75 @@ def emit_values():
 
 
 
+"""
+async def emit_values(pause_event):
+    global latitude, longitude, floor_number, user_lines_count
+    while True:
+        await pause_event.wait()
 
+        data = output_queue.get()
+        if data is None:
+            break
+        file_name, row, start_time, current_time = data
+
+        # Replace these values with the actual values from your CSV file or COMM port
+        latitude, longitude, floor_number = row
+
+        # Emit values to the connected clients
+        await socketio.emit('update_values', {'latitude': latitude, 'longitude': longitude, 'floorNumber': floor_number},
+                      callback=log_ack('update_values', data))
+
+        # Update user lines count for the specific CSV file
+        user_lines_count[file_name] = user_lines_count.get(file_name, 0) + 1
+
+        # Emit user lines count for each CSV file
+        await socketio.emit('update_users_info', {'users': user_lines_count},
+                      callback=log_ack('update_users_info', {'users': user_lines_count, 'file_name': file_name}))
+        # # Emit user lines count for each CSV file
+        # socketio.emit('update_users_info', {'users': user_lines_count, 'file_names': file_names},
+        #               callback=log_ack('update_users_info', {'users': user_lines_count, 'file_names': file_names}))
+
+        # Count total number of files
+        total_files = len([f for f in os.listdir(DATA_DIR) if os.path.isfile(os.path.join(DATA_DIR, f))])
+
+        # Emit user lines count and the total number of users
+        await socketio.emit('update_users_info_for_checklist', {'totalFiles': total_files},
+                      callback=log_ack('update_users_info_for_checklist', {'totalFiles': total_files}))
+
+        # Emit total number of files
+        await socketio.emit('number_of_files', {'totalFiles': total_files})
+
+
+        # Save to output file
+        save_to_output_file(file_name, row)
+
+        # Introduce a delay to slow down updates
+        time.sleep(0.01)
+        # time.sleep(10)
+
+        # Update map separately
+        map_data = {'latitude': latitude, 'longitude': longitude, 'floorNumber': floor_number}
+        await socketio.emit('update_map', {'map': map_data},
+                      callback=log_ack('update_map', {'map': map_data}))
+
+        # time.sleep(0.01)
+
+
+    pause_event = asyncio.Event()
+
+    # Pause data processing
+    pause_event.clear()
+
+    # Resume data processing
+    pause_event.set()
+
+"""
 
 def log_ack(event, data):
     def callback(response):
         print(f"ACK received for event '{event}' with data: {data}, response: {response}")
 
     return callback
-
-
-# @socketio.on('select_file')
-# def handle_select_file(data):
-#     file_name = data.get('file_name')
-#
-#     try:
-#         file_path = os.path.join(DATA_DIR, f"{file_name}.csv")
-#         with open(file_path, 'r') as file:
-#             file_content = file.read()
-#
-#         socketio.emit('file_content', {'file_name': file_name, 'latitude': latitude, 'longitude': longitude, 'floorNumber': floor_number})
-#     except Exception as e:
-#         print(f"Error reading or processing file: {file_name}. Error: {e}")
-
-
-
-# # Modify the emit_values function to emit values only for the selected CSV file
-# def emit_values():
-#     global latitude, longitude, floor_number, user_lines_count, selected_csv_file
-#     while True:
-#         data = output_queue.get()
-#         if data is None:
-#             break
-#         file_name, row, start_time, current_time = data
-#
-#         # Replace these values with the actual values from your CSV file or COMM port
-#         latitude, longitude, floor_number = row
-#
-#         # Emit values to the connected clients only if the CSV file matches the selected file
-#         if selected_csv_file is not None and file_name != selected_csv_file:
-#             continue
-#
-#         socketio.emit('update_values', {'latitude': latitude, 'longitude': longitude, 'floorNumber': floor_number})
-#
-#         # Update user lines count for the specific CSV file
-#         user_lines_count[file_name] = user_lines_count.get(file_name, 0) + 1
-#
-#         # Emit user lines count for each CSV file
-#         socketio.emit('update_users_info', {'users': user_lines_count})
-#
-#         # Count total number of files
-#         total_files = len([f for f in os.listdir(DATA_DIR) if os.path.isfile(os.path.join(DATA_DIR, f))])
-#         socketio.emit('update_users_info_for_checklist', {'totalFiles': total_files})
-#
-#         # Save to output file
-#         save_to_output_file(file_name, row)
-#
-#         # Introduce a delay to slow down updates
-#         time.sleep(0.01)
-#
-#         # Update map separately
-#         map_data = {'latitude': latitude, 'longitude': longitude, 'floorNumber': floor_number}
-#         socketio.emit('update_map', {'map': map_data})
-#
-# # Add a new route to handle selecting a specific CSV file
-# @socketio.on('select_csv_file')
-# def handle_select_csv_file(data):
-#     global selected_csv_file
-#     selected_csv_file = data['select_file']
-#     print(f"Selected CSV file: {selected_csv_file}")
-
 
 
 
@@ -336,13 +260,3 @@ def handle_connect():
 if __name__ == "__main__":
     # Start the Flask application with SocketIO support
     socketio.run(app, debug=True)
-
-
-
-
-
-
-
-
-
-

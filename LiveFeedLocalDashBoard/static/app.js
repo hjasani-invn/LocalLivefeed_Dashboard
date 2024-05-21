@@ -55,59 +55,6 @@ function createCheckboxes(totalFiles) {
 
 
 
-// function createCheckboxes(totalFiles) {
-//     var checkboxContainer = document.getElementById('checkbox-container');
-//     checkboxContainer.innerHTML = '';
-//
-//     var selectedCheckboxes = []; // Store selected checkboxes
-//
-//     // Store the state of selected checkboxes before recreating them
-//     var checkboxes = document.getElementsByClassName('user-checkbox');
-//     for (var i = 0; i < checkboxes.length; i++) {
-//         if (checkboxes[i].checked) {
-//             selectedCheckboxes.push(checkboxes[i].value);
-//         }
-//     }
-//
-//     for (var i = 1; i <= totalFiles; i++) {
-//         var user = `data_${i}`;
-//         const label = document.createElement("label");
-//         const checkbox = document.createElement("input");
-//         checkbox.type = "checkbox";
-//         checkbox.id = `checkbox_${user}`;
-//         checkbox.name = user;
-//         checkbox.className = 'user-checkbox';
-//         checkbox.value = user;  // Set the user name as the value
-//
-//         const textContent = document.createTextNode(user);
-//
-//         label.appendChild(checkbox);
-//         label.appendChild(textContent);
-//
-//         checkboxContainer.appendChild(label);
-//     }
-//
-//     // Re-select previously selected checkboxes
-//     for (var i = 0; i < selectedCheckboxes.length; i++) {
-//         var checkbox = document.getElementById(`checkbox_${selectedCheckboxes[i]}`);
-//         if (checkbox) {
-//             checkbox.checked = true;
-//         }
-//     }
-//
-//     // Attach the handleCheckboxChange function to checkbox change events
-//     var checkboxes = document.getElementsByClassName('user-checkbox');
-//     for (var i = 0; i < checkboxes.length; i++) {
-//         checkboxes[i].addEventListener('change', handleCheckboxChange);
-//     }
-// }
-
-
-
-
-
-
-
 // Fetch KML file and initialize the map
 fetch(kmlUrl)
     .then(res => res.text())
@@ -133,7 +80,8 @@ fetch(kmlUrl)
         }).addTo(map);
 
         // Initialize marker
-        marker = L.marker([51.0652269994906, -114.1446146646332]).addTo(map);
+        // marker = L.marker([51.0652269994906, -114.1446146646332]).addTo(map);
+        marker = L.marker([51.0652269994906, -114.1446146646332]);
 
         // Extract floor names and associated image URLs from KML and populate the dropdown
         var groundOverlays = kmlData.querySelectorAll('GroundOverlay');
@@ -162,17 +110,6 @@ fetch(kmlUrl)
         addRotatedImageOverlay(defaultImageUrl, defaultImageBounds, rotation);
     })
     .catch(error => console.error('Error fetching KML:', error));
-
-// // Function to populate floor options in the dropdown
-// function populateFloorOptions(floorOptions) {
-//     floorOptions.forEach(floor => {
-//         var option = document.createElement('option');
-//         option.value = floor;
-//         option.textContent = floor;
-//         floorSelect.appendChild(option);
-//     });
-// }
-
 
 
 // Function to populate floor options in the dropdown
@@ -227,198 +164,22 @@ function changeFloor() {
 
 
 
-
-
-// // Variable to count the number of markers displayed
-// var markerCounter = 0;
-// async function updateMarkers() {
-//     console.log("inside updateMarkers");
-//     var selectedFloor = selected_floor.toUpperCase().replace('F', ''); // Remove 'F' prefix
-//     console.log("Selected Floor:", selected_floor);
-//     console.log("Selected Users:", selected_users);
-//
-//     // Clear previous markers
-//     markers.clearLayers();
-//
-//     // Counter to track the number of values changed
-//     var valueCounter = 0;
-//
-//     // Check if real-time updates are still enabled
-//     if (!isPlaying) {
-//         console.log("Real-time updates are not enabled. Stopping marker updates.");
-//         return;
-//     }
-//
-//
-//
-//         // Reset the marker counter
-//     markerCounter = 0;
-//
-//
-//
-//
-//     if (selectedFloor && selected_users.length > 0) {
-//         for (const user of selected_users) {
-//             try {
-//                 const response = await fetch(`http://localhost:5000/static/data/${user}.csv`);
-//                 const csvData = await response.text();
-//                 console.log("CSV data:", csvData);
-//
-//                 // Parse CSV data
-//                 var lines = csvData.split('\n');
-//                 var latitudeIndex = 7; // Assuming latitude is at column 7
-//                 var longitudeIndex = 8; // Assuming longitude is at column 8
-//                 var floorNumberIndex = 11; // Assuming floor number is at column 11
-//
-//                 // Process each row of the CSV data
-//                 var delay = 10; // Delay in milliseconds between each marker update
-//                 for (let index = 0; index < lines.length; index++) {
-//                     await new Promise(resolve => setTimeout(resolve, index * delay));
-//                     var line = lines[index];
-//                     var rowData = line.split(',');
-//                     var floorNumber = parseInt(rowData[floorNumberIndex]); // Parsing the floor number
-//                     if (!isNaN(floorNumber)) {
-//                         var floorNumberTrimmed = rowData[floorNumberIndex].trim(); // Trim whitespace
-//                         if (floorNumberTrimmed === selectedFloor) {
-//                             var latitude = parseFloat(rowData[latitudeIndex]);
-//                             var longitude = parseFloat(rowData[longitudeIndex]);
-//                             console.log(`CSV: ${user}, Latitude: ${latitude}, Longitude: ${longitude}, Floor Number: ${floorNumber}`);
-//                             if (!isNaN(latitude) && !isNaN(longitude)) {
-//                                 // Create a unique marker icon for each user
-//                                 var userMarkerIcon = createMarkerIcon(user); // Assuming user as the identifier for marker color
-//                                 // Create a new marker for each user
-//                                 var userMarker = L.marker([latitude, longitude], {
-//                                     icon: userMarkerIcon
-//                                 }).addTo(map);
-//                                 markers.addLayer(userMarker); // Add the marker to the layer group
-//                                 valueCounter++; // Increment the counter for each value changed
-//                                 // Increment the marker counter
-//                                 markerCounter++;
-//                             }
-//                         }
-//                     }
-//                 }
-//             } catch (error) {
-//                 console.error('Error fetching or processing CSV:', error);
-//             }
-//         }
-//     } else {
-//         console.log("No floor or user selected.");
-//     }
-//
-//     // Log the total number of values changed
-//     console.log(`Total values changed: ${valueCounter}`);
-//
-//     // Log the total number of markers displayed
-//     console.log("Total markers displayed:", markerCounter);
-// }
-
-
-
-
-
-
 // Variable to count the number of markers displayed
 var markerCounter = 0;
-
-// async function updateMarkers() {
-//     console.log("Inside updateMarkers");
-//     console.log("Selected Floor:", selected_floor);
-//     console.log("Selected Users:", selected_users);
-//
-//     // Clear previous markers
-//     markers.clearLayers();
-//
-//     // Counter to track the number of values changed
-//     var valueCounter = 0;
-//
-//     // Check if real-time updates are still enabled
-//     if (!isPlaying) {
-//         console.log("Real-time updates are not enabled. Stopping marker updates.");
-//         return;
-//     }
-//
-//     // Reset the marker counter
-//     markerCounter = 0;
-//
-//     var selectedFloor = selected_floor.trim().toUpperCase(); // Convert to uppercase and remove leading/trailing whitespace
-//     if (selectedFloor.startsWith('F')) {
-//         selectedFloor = selectedFloor.substring(1); // Remove 'F' prefix
-//         if (selectedFloor === '1') {
-//             selectedFloor = '0'; // Treat 'F1' as 0
-//         }
-//     } else if (selectedFloor.startsWith('P')) {
-//         selectedFloor = '-' + (parseInt(selectedFloor.substring(1)) || ''); // Convert 'P1' to '-1', 'P2' to '-2', etc.
-//     }
-//
-//     if (selectedFloor !== null && selected_users.length > 0) {
-//         for (const user of selected_users) {
-//             try {
-//                 const response = await fetch(`http://localhost:5000/static/data/${user}.csv`);
-//                 const csvData = await response.text();
-//                 console.log("CSV data:", csvData);
-//
-//                 // Parse CSV data
-//                 var lines = csvData.split('\n');
-//                 var latitudeIndex = 7; // Assuming latitude is at column 7
-//                 var longitudeIndex = 8; // Assuming longitude is at column 8
-//                 var floorNumberIndex = 11; // Assuming floor number is at column 11
-//
-//                 // Process each row of the CSV data
-//                 var delay = 10; // Delay in milliseconds between each marker update
-//                 for (let index = 0; index < lines.length; index++) {
-//                     await new Promise(resolve => setTimeout(resolve, index * delay));
-//                     var line = lines[index];
-//                     var rowData = line.split(',');
-//                     var floorNumber = parseInt(rowData[floorNumberIndex]); // Parsing the floor number
-//                     if (!isNaN(floorNumber)) {
-//                         var floorNumberTrimmed = rowData[floorNumberIndex].trim(); // Trim whitespace
-//                         if (floorNumberTrimmed === selectedFloor) {
-//                             var latitude = parseFloat(rowData[latitudeIndex]);
-//                             var longitude = parseFloat(rowData[longitudeIndex]);
-//                             console.log(`CSV: ${user}, Latitude: ${latitude}, Longitude: ${longitude}, Floor Number: ${floorNumber}`);
-//                             if (!isNaN(latitude) && !isNaN(longitude)) {
-//                                 // Create a unique marker icon for each user
-//                                 var userMarkerIcon = createMarkerIcon(user); // Assuming user as the identifier for marker color
-//
-//                                 // Create a new marker for each user with a custom icon containing the label
-//
-//
-//                                 // Create a new marker for each user
-//                                 var userMarker = L.marker([latitude, longitude], {
-//                                     icon: userMarkerIcon
-//                                 }).bindTooltip(`User: ${user}`, { noHide: true }).addTo(map);
-//                                 markers.addLayer(userMarker); // Add the marker to the layer group
-//                                 valueCounter++; // Increment the counter for each value changed
-//                                 // Increment the marker counter
-//                                 markerCounter++;
-//                             }
-//                         }
-//                     }
-//                 }
-//             } catch (error) {
-//                 console.error('Error fetching or processing CSV:', error);
-//             }
-//         }
-//     } else {
-//         console.log("No floor or user selected.");
-//     }
-//
-//     // Log the total number of values changed
-//     console.log(`Total values changed: ${valueCounter}`);
-//
-//     // Log the total number of markers displayed
-//     console.log("Total markers displayed:", markerCounter);
-// }
-
-
-
 
 
 
 async function updateMarkers() {
     try {
         console.log("Inside updateMarkers");
+
+        // Check if real-time updates are still enabled
+        if (!isPlaying) {
+            console.log("Playback is paused. Stopping marker updates.");
+            markers.clearLayers(); // Clear existing markers from the map
+            return; // Return early if playback is paused
+        }
+
         console.log("Selected Floor:", selected_floor);
         console.log("Selected Users:", selected_users);
 
@@ -524,19 +285,7 @@ for (var i = 0; i < fileCheckboxes.length; i++) {
     fileCheckboxes[i].addEventListener('change', handleFileCheckboxChange);
 }
 
-// function handleCheckboxChange() {
-//     // Example: Selecting a file named 'data_1.csv'
-//     var selectedFileName = event.target.value;
-//     socket.emit('select_file', { file_name: selectedFileName });
-//
-//     console.log('Checkbox state changed')
-//     selected_users = Array.from(document.getElementsByClassName('user-checkbox'))
-//         .filter(checkbox => checkbox.checked)
-//         .map(checkbox => checkbox.value);
-//     console.log("Selected Users:", selected_users);
-//
-//     // updateMarkers();
-// }
+
 
 
 var selected_users = []; // Initialize selected_users array
@@ -562,17 +311,6 @@ function startRealTimeUpdates() {
 
 
 
-    // socket.on('update_values', function(data) {
-    //     document.getElementById('latitude').innerText = data.latitude;
-    //     document.getElementById('longitude').innerText = data.longitude;
-    //     document.getElementById('floor-number').innerText = data.floorNumber;
-    //
-    //     // Log coordinates to the console
-    //     console.log("Coordinates (Real-time):", data);
-    //
-    //     // Move marker to real-time coordinates
-    //     marker.setLatLng([data.latitude, data.longitude]);
-    // });
 
     // After all CSV lines have been read, reset the UI and switch the button back to "Play"
     socket.on('csv_finished', function() {
@@ -593,152 +331,143 @@ function handleRealTimeUpdates(data) {
     // Log coordinates to the console
     console.log("Coordinates (Real-time):", data);
     // Move marker to real-time coordinates
-    marker.setLatLng([data.latitude, data.longitude]);
+    // marker.setLatLng([data.latitude, data.longitude]);
 }
 
 
 
-// // Function to stop real-time updates
-// function stopRealTimeUpdates() {
-//     console.log("Stopping real-time updates");
-//     // Unsubscribe from socket updates
-//     socket.off('update_values', handleRealTimeUpdates);
-//     socket.off('csv_finished');
-//     isPlaying = false;
-// }
-//
-//
-//
-//
-// Function to toggle LiveFeed
-// function toggleLivefeed() {
-//     if (!isPlaying) {
-//         startLivefeed();
-//     } else {
-//         stopLivefeed();
-//     }
-// }
-//
-// // Function to start LiveFeed
-// async function startLivefeed() {
-//     console.log('Starting LiveFeed');
-//     isPlaying = true;
-//     liveFeedButton.textContent = 'Stop LiveFeed'; // Update button text to "Stop LiveFeed"
-//
-//     try {
-//         // Fetch CSV data for selected users
-//         for (const user of selected_users) {
-//             const response = await fetch(`http://localhost:5000/static/data/${user}.csv`);
-//             const csvData = await response.text();
-//             console.log("CSV data:", csvData);
-//
-//             // Parse CSV data
-//             var lines = csvData.split('\n');
-//             var latitudeIndex = 7; // Assuming latitude is at column 7
-//             var longitudeIndex = 8; // Assuming longitude is at column 8
-//             var floorNumberIndex = 11; // Assuming floor number is at column 11
-//
-//             // Process each row of the CSV data
-//             var delay = 1; // Delay in milliseconds between each marker update
-//             for (let index = 0; index < lines.length; index++) {
-//                 await new Promise(resolve => setTimeout(resolve, index * delay));
-//                 var line = lines[index];
-//                 var rowData = line.split(',');
-//                 var floorNumber = parseInt(rowData[floorNumberIndex]); // Parsing the floor number
-//                 if (!isNaN(floorNumber)) {
-//                     var floorNumberTrimmed = rowData[floorNumberIndex].trim(); // Trim whitespace
-//                     if (floorNumberTrimmed === selected_floor) {
-//                         var latitude = parseFloat(rowData[latitudeIndex]);
-//                         var longitude = parseFloat(rowData[longitudeIndex]);
-//                         console.log(`CSV: ${user}, Latitude: ${latitude}, Longitude: ${longitude}, Floor Number: ${floorNumber}`);
-//                         if (!isNaN(latitude) && !isNaN(longitude)) {
-//                             // Update marker position
-//                             marker.setLatLng([latitude, longitude]);
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     } catch (error) {
-//         console.error('Error fetching or processing CSV:', error);
-//     }
-// }
-//
-//
-// // Function to stop LiveFeed
-// function stopLivefeed() {
-//     console.log('Stopping LiveFeed');
-//     isPlaying = false;
-//     liveFeedButton.textContent = 'LiveFeed'; // Update button text to "LiveFeed"
-// }
+
+let positionMarkers = L.layerGroup();
+let LiveFeedPaused = false; // Flag to control pause/resume state
+
+async function startLiveFeed() {
+    try {
+        console.log('Starting LiveFeed');
+
+        liveFeedIndex = 0;
 
 
-// Function to start livefeed
-// function startLiveFeed() {
-//     console.log('Starting LiveFeed');
-//     isPlaying = true; // Set isPlaying to true when starting liveFeed
-//
-//     // Update the text content of the button to indicate the liveFeed is playing
-//     liveFeedButton.textContent = 'StopLiveFeed';
-//
-//     // Establish Socket.IO connection
-//     socket = io.connect('http://' + document.domain + ':' + location.port);
-//
-//     // Update Latitude, Longitude, and Floor Number values for real-time updates
-//     socket.on('update_values', function(data) {
-//         console.log('Values data updated:', data);
-//         document.getElementById('latitude').innerText = data.latitude;
-//         document.getElementById('longitude').innerText = data.longitude;
-//         document.getElementById('floor-number').innerText = data.floorNumber;
-//         marker.setLatLng([data.latitude, data.longitude, data.floorNumber]);
-//
-//     });
+        // Get the selected floor value and map it properly
+        let selectedFloor = floorSelect.value.trim().toUpperCase(); // Convert to uppercase and remove leading/trailing whitespace
+        if (selectedFloor.startsWith('F')) {
+            selectedFloor = selectedFloor.substring(1); // Remove 'F' prefix
+            if (selectedFloor === '1') {
+                selectedFloor = '0'; // Treat 'F1' as 0
+            }
+        } else if (selectedFloor.startsWith('P')) {
+            selectedFloor = '-' + (parseInt(selectedFloor.substring(1)) || ''); // Convert 'P1' to '-1', 'P2' to '-2', etc.
+        }
+
+        // Clear previous position markers before fetching and adding new ones
+        positionMarkers.clearLayers();
+        console.log("Previous position markers cleared.");
 
 
-    // // Listen for real-time updates from the server
-    // socket.on('update_map', function (data) {
-    //     console.log('Map data updated:', data);
-    //     // Update marker position based on received data
-    //     marker.setLatLng([data.map.latitude, data.map.longitude]);
-    // });
+        // Get the selected users from checkboxes
+        const checkboxes = document.querySelectorAll('#user-checkboxes input[type="checkbox"]:checked');
+        const selectedUsers = Array.from(checkboxes).map(checkbox => checkbox.value);
+
+        if (selectedUsers.length === 0) {
+            console.log("No users selected for LiveFeed.");
+            return;
+        }
+
+        // Object to store user counts
+        const userCounts = {};
+
+        // Function to fetch and process live feed data for a user
+        async function fetchAndProcessData(user, rows) {
+            const color = getRandomColor();
+            let count = 0; // Counter for matching rows
+
+            // Process each row of the CSV data
+            const processRow = async (rowIndex) => {
+                if (rowIndex >= rows.length) {
+                    console.log("LiveFeed completed for", user);
+                    userCounts[user] = count;
+                    updateUsersList(selectedUsers, userCounts); // Update user list with counts
+                    return;
+                }
+                const row = rows[rowIndex];
+                const columns = row.split(',');
+                const floorNumber = parseInt(columns[11]); // Assuming floor number is at column 11
+
+                // Check if the row's floor number matches the selected floor
+                if (!isNaN(floorNumber) && floorNumber.toString() === selectedFloor) {
+                    const latitude = parseFloat(columns[7]);
+                    const longitude = parseFloat(columns[8]);
+
+                    if (!isNaN(latitude) && !isNaN(longitude)) {
+                        count++; // Increment count for matching row
+
+                        // Display position information
+                        document.getElementById('latitude').textContent = latitude.toFixed(6);
+                        document.getElementById('longitude').textContent = longitude.toFixed(6);
+                        document.getElementById('floor-number').textContent = floorNumber;
+
+                        const tooltipContent = `${user} - Floor: ${floorNumber}, Latitude: ${latitude}, Longitude: ${longitude}`;
+                        // Create a marker for the position
+                        const marker = L.marker([latitude, longitude], {
+                            icon: createMarkerIcon(color)
+                        }).bindTooltip(tooltipContent);
+
+                        // Add the marker to the positionMarkers layer group
+                        positionMarkers.addLayer(marker);
+
+                        // Update user count with each new marker
+                        userCounts[user] = count;
+                        updateUsersList(selectedUsers, userCounts);
+
+                        // Add the positionMarkers layer group to the map
+                        map.addLayer(positionMarkers);
+
+                        console.log("Position marker added for LiveFeed:", latitude, longitude);
+                    } else {
+                        console.log("Invalid latitude or longitude:", latitude, longitude);
+                    }
+                } else {
+                    console.log("Row skipped because floor number does not match:", row);
+                }
+                setTimeout(() => processRow(rowIndex + 1), 500); // Wait for 1 second before processing next row
+            };
+
+            // Start processing rows
+            await processRow(0);
+        }
+
+        // Start fetching and processing data for each selected user
+        for (const user of selectedUsers) {
+            const response = await fetch(`http://localhost:5000/static/data/${user}.csv`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch ${user}.csv`);
+            }
+            const csvData = await response.text();
+            const rows = csvData.split('\n');
 
 
-// }
 
+            await fetchAndProcessData(user, rows);
+        }
 
-
-function startLiveFeed() {
-    console.log('Starting LiveFeed');
-    isPlaying = true; // Set isPlaying to true when starting liveFeed
-
-    // Update the text content of the button to indicate the liveFeed is playing
-    liveFeedButton.textContent = 'StopLiveFeed';
-
-    // Establish Socket.IO connection
-    socket = io.connect('http://' + document.domain + ':' + location.port);
-
-    console.log('Button text content:', liveFeedButton.textContent); // Log the button text content
-
-    // Check if the button text content is "StopLiveFeed"
-    if (liveFeedButton.textContent === 'StopLiveFeed') {
-        console.log('Subscribing to real-time updates...'); // Log that we are subscribing to real-time updates
-        // Update Latitude, Longitude, and Floor Number values for real-time updates
-        socket.on('update_values', function(data) {
-            console.log('Values data updated:', data);
-            document.getElementById('latitude').innerText = data.latitude;
-            document.getElementById('longitude').innerText = data.longitude;
-            document.getElementById('floor-number').innerText = data.floorNumber;
-            marker.setLatLng([data.latitude, data.longitude, data.floorNumber]);
-        });
-    } else {
-        // Stop real-time updates if the button text content is not "StopLiveFeed"
-        console.log('Stopping LiveFeed from startLiveFeed function...'); // Log that we are stopping LiveFeed
-        stopLiveFeed();
-        console.log('LiveFeed stopped'); // Add a log statement to indicate that LiveFeed is stopped
+        console.log("LiveFeed started.");
+    } catch (error) {
+        console.error('Error loading LiveFeed data:', error);
     }
 }
 
 
+// Update user list with counts
+function updateUsersList(selectedUsers, userCounts) {
+    const userList = document.getElementById('user-list');
+    userList.innerHTML = ''; // Clear existing content
+
+    selectedUsers.forEach(user => {
+        const listItem = document.createElement('li');
+        const count = userCounts[user] || 0; // Get count or default to 0
+        listItem.textContent = `${user}: ${count}`;
+        userList.appendChild(listItem);
+    });
+}
 
 
 
@@ -748,7 +477,7 @@ function stopLiveFeed() {
     isPlaying = false; // Set isPlaying to false when stopping liveFeed
 
     // Update the text content of the button to indicate the liveFeed is paused
-    liveFeedButton.textContent = 'LiveFeed';
+    // liveFeedButton.textContent = 'LiveFeed';
 
     // Close the Socket.IO connection to stop receiving real-time updates
     if (socket) {
@@ -760,14 +489,52 @@ function stopLiveFeed() {
 }
 
 
-// Function to toggle LiveFeed
-function toggleLiveFeed() {
-    if (!isPlaying) {
-        startLiveFeed();
-    } else {
-        stopLiveFeed();
-    }
+
+
+// Variable to hold the interval ID for live feed
+let liveFeedIntervalId = null;
+
+// Flag to indicate if live feed is paused
+let isLiveFeedPaused = false;
+
+// Function to pause or resume the live feed
+function pauseResumeLiveFeed() {
+    LiveFeedPaused =!LiveFeedPaused;
+    console.log(LiveFeedPaused ? "Real Live feed paused." : "Real Live feed resumed.");
 }
+
+
+
+
+
+function clear_liveFeed() {
+    console.log("Clearing LiveFeed trajectory markers...");
+
+    // Clear the position markers from the map
+    positionMarkers.clearLayers();
+
+    // Reset the position information on the UI
+    document.getElementById('latitude').textContent = '';
+    document.getElementById('longitude').textContent = '';
+    document.getElementById('floor-number').textContent = '';
+
+
+    document.getElementById('user-list').innerHTML = ''; // Clear existing content
+
+
+
+    // Uncheck all checked checkboxes
+    const checkboxes = document.querySelectorAll('#user-checkboxes input[type="checkbox"]:checked');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    console.log("Checkboxes unchecked.");
+
+    console.log("LiveFeed trajectory markers cleared.");
+}
+
+
+
 
 
 
@@ -786,6 +553,9 @@ function stopRealTimeUpdates() {
 
 
 }
+
+
+
 
 
 
@@ -816,88 +586,195 @@ var playButton = document.getElementById('playButton');
 
 
 
-// // Function to toggle playback
-// function togglePlayback() {
-//     isPlaying = !isPlaying;
-//     playButton.textContent = isPlaying ? 'Pause' : 'Play';
-//
-//     if (isPlaying) {
-//         // Start real-time updates only when play button is pressed and valid floor and users are selected
-//         if (selected_floor !== null && selected_users.length > 0) {
-//             console.log("Starting real-time updates for floor:", selected_floor, "and users:", selected_users);
-//             startRealTimeUpdates();
-//             updateMarkers(); // Call updateMarkers when starting playback
-//         } else {
-//             console.log("Select a floor and user before playing.");
-//             isPlaying = false;
-//             playButton.textContent = 'Play';
-//         }
-//     } else {
-//         console.log("Pausing real-time updates.");
-//         stopRealTimeUpdates(); // Pause real-time updates when playback is paused
-//     }
-// }
+// NEW APPROACH FOR ASSETS STARTS
 
 
-// Function to toggle playback
-function togglePlayback() {
-    isPlaying = !isPlaying;
-    playButton.textContent = isPlaying ? 'Pause' : 'Play';
+function createCheckboxesForLiveFeedPlayback(totalFiles) {
+    var checkboxContainer = document.getElementById('checkboxes_LiveFeedPlayBackSection');
+    checkboxContainer.innerHTML = '';
 
-    if (isPlaying) {
-        // Start real-time updates only when play button is pressed and valid floor and users are selected
-        if (selected_floor !== null && selected_users.length > 0) {
-            console.log("Starting real-time updates for floor:", selected_floor, "and users:", selected_users);
-            startRealTimeUpdates();
-            updateMarkers(); // Call updateMarkers when starting playback
-        } else {
-            console.log("Select a floor and user before playing.");
-            isPlaying = false;
-            playButton.textContent = 'Play';
-        }
+    for (var i = 1; i <= totalFiles; i++) {
+        var user = `data_${i}`;
+        const label = document.createElement("label");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = `checkbox_${user}`;
+        checkbox.name = user;
+        checkbox.className = 'checkbox-LiveFeedPlayBack'; // Updated class name here
+        checkbox.value = user;  // Set the user name as the value
+
+        const textContent = document.createTextNode(user);
+
+        label.appendChild(checkbox);
+        label.appendChild(textContent);
+
+        checkboxContainer.appendChild(label);
+    }
+
+    // Attach the handleCheckboxChange function to checkbox change events
+    var checkboxes = document.getElementsByClassName('checkbox-LiveFeedPlayBack'); // Updated class name here
+    for (var i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].addEventListener('change', handleCheckboxChange);
+    }
+}
+
+function updateSelectedFloor(selectedFloor) {
+    if (!isNaN(selectedFloor) && selected_users.length > 0) {
+        // Trigger playback if users are selected and the selected floor is valid
+        startPlayback();
     } else {
-        console.log("Pausing real-time updates.");
-        stopRealTimeUpdates(); // Pause real-time updates when playback is paused
-    }
-
-    // If LiveFeed is active, stop it when playback is clicked
-    if (isPlaying && isLiveFeedActive()) {
-        stopLiveFeed();
+        console.log("No users selected for playback or invalid floor selected.");
+        // Stop playback and clear markers if no users are selected or the floor is invalid
+        playbackActive = false;
+        markers.clearLayers();
     }
 }
 
-// Function to check if LiveFeed is active
-function isLiveFeedActive() {
-    return isPlaying && liveFeedButton.textContent === 'Pause';
+let playbackActive = false;
+let playbackPaused = false;
+let playbackIndex = 0;
+
+
+async function startPlayback() {
+    try {
+        if (playbackActive) {
+            console.log("Playback is already active.");
+            return;
+        }
+
+        // Get the selected floor value and map it properly
+        let selectedFloor = floorSelect.value.trim().toUpperCase(); // Convert to uppercase and remove leading/trailing whitespace
+        if (selectedFloor.startsWith('F')) {
+            selectedFloor = selectedFloor.substring(1); // Remove 'F' prefix
+            if (selectedFloor === '1') {
+                selectedFloor = '0'; // Treat 'F1' as 0
+            }
+        } else if (selectedFloor.startsWith('P')) {
+            selectedFloor = '-' + (parseInt(selectedFloor.substring(1)) || ''); // Convert 'P1' to '-1', 'P2' to '-2', etc.
+        }
+
+        // Clear previous markers before fetching and adding new ones
+        playbackMarkers.clearLayers();
+        console.log("Previous markers cleared.");
+
+        // Reset the playback index when starting a new playback
+        playbackIndex = 0;
+
+        const checkboxes = document.querySelectorAll('#checkboxes_LiveFeedPlayBackSection input[type="checkbox"]:checked');
+        const selectedUsers = Array.from(checkboxes).map(checkbox => checkbox.value);
+
+        if (selectedUsers.length === 0) {
+            console.log("No users selected for playback.");
+            return;
+        }
+
+        // Iterate over each checked checkbox
+        for (const user of selectedUsers) {
+            const color = getRandomColor();
+
+            // Fetch CSV data for the selected user
+            const response = await fetch(`http://localhost:5000/static/data/${user}.csv`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch ${user}.csv`);
+            }
+            const csvData = await response.text();
+            const rows = csvData.split('\n');
+
+            // Process CSV data
+            for (let i = playbackIndex; i < rows.length; i++) {
+                const row = rows[i];
+                const columns = row.split(',');
+                const floorNumber = parseInt(columns[11]); // Assuming floor number is at column 11
+
+                // Check if the row's floor number matches the selected floor
+                if (!isNaN(floorNumber) && floorNumber.toString() === selectedFloor) {
+                    const latitude = parseFloat(columns[7]);
+                    const longitude = parseFloat(columns[8]);
+
+                    if (!isNaN(latitude) && !isNaN(longitude)) {
+                        // Create a marker for the position
+                        const marker = L.marker([latitude, longitude], {
+                            icon: createMarkerIcon(color)
+                        }).bindTooltip(`${user} (Position)`);
+
+                        // Add the marker to the playbackMarkers layer group
+                        playbackMarkers.addLayer(marker);
+                    }
+                }
+            }
+        }
+
+        // Display the markers on the map
+        map.addLayer(playbackMarkers);
+        console.log("All position markers added for playback.");
+    } catch (error) {
+        console.error('Error loading playback data:', error);
+    }
 }
 
 
 
 
+function pauseResumePlayback() {
+    playbackPaused = !playbackPaused; // Toggle the playbackPaused state
+    console.log(playbackPaused ? "Playback paused." : "Playback resumed.");
+}
 
 // Function to stop playback
 function stopPlayback() {
-    isPlaying = false;
-    playButton.textContent = 'Play';
-    stopRealTimeUpdates();
-    markers.clearLayers();
+    playbackActive = false;
+    markers.clearLayers(); // Clear markers when stopping playback
+    console.log("Playback stopped and markers cleared.");
+}
+
+// Utility function to delay execution
+function PlayBackDelay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+
+// Define a layer group for playback markers
+const playbackMarkers = L.layerGroup();
+
+async function clearPlayback() {
+    console.log("Clearing playback...");
+
+    // Stop playback processing
+    playbackActive = false;
+
+    // Remove all playback markers from the map
+    playbackMarkers.clearLayers();
+
+    // Reset the pause/stop button
+    playbackPaused = false;
+
+    // Reset the playbackIndex
+    playbackIndex = 0;
+
+    // Uncheck all checked checkboxes
+    const checkboxes = document.querySelectorAll('#checkboxes_LiveFeedPlayBackSection input[type="checkbox"]:checked');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+
+    // Clear selected floor
+    selected_floor = null;
+
+    console.log("Playback cleared.");
 }
 
 
 
 
 
+// NEW APPROACH FOR ASSETS ENDS
 
 
-// var asset_users = []; // Initialize asset_users array
-//
-// // Function to handle checkbox change events for assets
-// function handleCheckboxChangeAssets() {
-//     asset_users = Array.from(document.getElementsByClassName('assets-checkbox'))
-//         .filter(checkbox => checkbox.checked)
-//         .map(checkbox => checkbox.value);
-//     console.log("Assets Users:", asset_users);
-// }
+
+
+
+
 
 
 
@@ -941,842 +818,6 @@ function createCheckboxesForAssets(totalFiles) {
 // Define a layer group to store asset markers
 var assetMarkers = L.layerGroup();
 
-//Function to load assets
-// function loadAssets() {
-//
-//     // Fetch the CSV file containing asset data
-//     fetch('http://localhost:5000/static/data/data_1.csv')
-//     // fetch('http://localhost:5000/static/data/${user}.csv')
-//         .then(response => response.text())
-//         .then(csvData => {
-//             // Parse the CSV data
-//             const rows = csvData.split('\n');
-//             for (let i = 1; i < rows.length; i++) { // Start from index 1 to skip header row
-//                 const columns = rows[i].split(',');
-//                 const latitude = parseFloat(columns[7]); // Assuming latitude is in first column
-//                 const longitude = parseFloat(columns[8]); // Assuming longitude is in second column
-//                 if (!isNaN(latitude) && !isNaN(longitude)) { // Check if latitude and longitude are valid numbers
-//                     // Create a marker for the asset location
-//                     const assetMarker = L.marker([latitude, longitude]).addTo(map);
-//                     // Optionally, you can customize the marker icon or add a tooltip
-//                     // assetMarker.setIcon(...);
-//                     assetMarker.bindTooltip('Asset Name');
-//                     // Add the marker to the assetMarkers layer group
-//                     assetMarkers.addLayer(assetMarker);
-//                 }
-//             }
-//             // Add the layer group containing asset markers to the map
-//             map.addLayer(assetMarkers);
-//         })
-//         .catch(error => {
-//             console.error('Error loading asset data:', error);
-//         });
-// }
-
-
-
-
-
-
-// function loadAssets() {
-//     const fileNames = ['data_1.csv', 'data_2.csv', 'data_3.csv', 'data_4.csv', 'data_5.csv']; // List of file names
-//
-//     // Iterate over each file name and fetch the corresponding CSV data
-//     fileNames.forEach(fileName => {
-//         fetch(`http://localhost:5000/static/data/${fileName}`)
-//             .then(response => {
-//                 if (!response.ok) {
-//                     throw new Error(`Failed to fetch ${fileName}`);
-//                 }
-//                 return response.text();
-//             })
-//             .then(csvData => {
-//                 // Parse the CSV data
-//                 const rows = csvData.split('\n');
-//                 for (let i = 1; i < rows.length; i++) { // Start from index 1 to skip header row
-//                     const columns = rows[i].split(',');
-//                     const latitude = parseFloat(columns[7]); // Assuming latitude is in first column
-//                     const longitude = parseFloat(columns[8]); // Assuming longitude is in second column
-//                     if (!isNaN(latitude) && !isNaN(longitude)) { // Check if latitude and longitude are valid numbers
-//                         // Create a marker for the asset location
-//                         const assetMarker = L.marker([latitude, longitude]).addTo(map);
-//                         // Optionally, you can customize the marker icon or add a tooltip
-//                         // assetMarker.setIcon(...);
-//                         assetMarker.bindTooltip('Asset Name');
-//                         // Add the marker to the assetMarkers layer group
-//                         assetMarkers.addLayer(assetMarker);
-//                     }
-//                 }
-//                 // Add the layer group containing asset markers to the map
-//                 map.addLayer(assetMarkers);
-//             })
-//             .catch(error => {
-//                 console.error(`Error loading asset data for ${fileName}:`, error);
-//             });
-//     });
-// }
-
-
-
-
-
-
-// function loadAssets() {
-//     if (asset_users.length > 0) {
-//         for (const user of asset_users) {
-//             // Fetch the CSV file containing asset data for each user
-//             // fetch(`http://localhost:5000/static/data/${user}.csv`)
-//                 fetch('http://localhost:5000/static/data/data_1.csv')
-//
-//                 .then(response => response.text())
-//                 .then(csvData => {
-//                     // Parse the CSV data
-//                     const rows = csvData.split('\n');
-//                     for (let i = 1; i < rows.length; i++) { // Start from index 1 to skip header row
-//                         const columns = rows[i].split(',');
-//                         const latitude = parseFloat(columns[7]); // Assuming latitude is in first column
-//                         const longitude = parseFloat(columns[8]); // Assuming longitude is in second column
-//                         if (!isNaN(latitude) && !isNaN(longitude)) { // Check if latitude and longitude are valid numbers
-//                             // Create a marker for the asset location
-//                             const assetMarker = L.marker([latitude, longitude]).addTo(map);
-//                             // Optionally, you can customize the marker icon or add a tooltip
-//                             // assetMarker.setIcon(...);
-//                             assetMarker.bindTooltip('Asset Name');
-//                             // Add the marker to the assetMarkers layer group
-//                             assetMarkers.addLayer(assetMarker);
-//                         }
-//                     }
-//                     // Add the layer group containing asset markers to the map
-//                     map.addLayer(assetMarkers);
-//                 })
-//                 .catch(error => {
-//                     console.error(`Error loading asset data for ${user}.csv:`, error);
-//                 });
-//         }
-//     }
-// }
-
-
-
-
-//
-//     const fileNames = ['data_1.csv', 'data_2.csv', 'data_3.csv']; // List of file names
-//
-// function loadAssets() {
-//
-//
-//
-//     const checkboxes = document.querySelectorAll('.assets-checkbox:checked'); // Get all checked checkboxes
-//
-//     // Iterate over each checked checkbox
-//     checkboxes.forEach((checkbox, index) => {
-//         const fileName = checkbox.value; // Get the value of the checkbox (which corresponds to the file name)
-//         const color = getRandomColor(); // Generate a random color for each checkbox
-//
-//         fetch(`http://localhost:5000/static/data/${fileName}.csv`)
-//             .then(response => {
-//                 if (!response.ok) {
-//                     throw new Error(`Failed to fetch ${fileName}`);
-//                 }
-//                 return response.text();
-//             })
-//             .then(csvData => {
-//                 // Parse the CSV data
-//                 const rows = csvData.split('\n');
-//                 for (let i = 1; i < rows.length; i++) { // Start from index 1 to skip header row
-//                     const columns = rows[i].split(',');
-//                     const latitude = parseFloat(columns[7]); // Assuming latitude is in first column
-//                     const longitude = parseFloat(columns[8]); // Assuming longitude is in second column
-//                     if (!isNaN(latitude) && !isNaN(longitude)) { // Check if latitude and longitude are valid numbers
-//                         // Create a marker for the asset location with the specified color
-//                         const assetMarker = L.marker([latitude, longitude], {
-//                             icon: createMarkerIcon(color) // Pass the color to the createMarkerIcon function
-//                         }).addTo(map);
-//                         // Optionally, you can customize the marker icon or add a tooltip
-//                         // assetMarker.setIcon(...);
-//                         assetMarker.bindTooltip(checkbox.name);
-//                         // assetMarker.bindTooltip(`User: ${user}`, { noHide: true });
-//
-//                         // var userMarker = L.marker([latitude, longitude], {
-//                         //             icon: userMarkerIcon
-//                         //         }).bindTooltip(`User: ${user}`, { noHide: true }).addTo(map);
-//
-//                         // Add the marker to the assetMarkers layer group
-//                         assetMarkers.addLayer(assetMarker);
-//                     }
-//                 }
-//                 // Add the layer group containing asset markers to the map
-//                 map.addLayer(assetMarkers);
-//             })
-//             .catch(error => {
-//                 console.error(`Error loading asset data for ${fileName}.csv:`, error);
-//             });
-//     });
-// }
-
-
-
-
-//// BELOW METHOD IS WORKING
-// function loadAssets() {
-//     const checkboxes = document.querySelectorAll('.assets-checkbox:checked'); // Get all checked checkboxes
-//
-//     // Iterate over each checked checkbox
-//     checkboxes.forEach((checkbox, index) => {
-//         const user = checkbox.value; // Get the value of the checkbox (which corresponds to the user name)
-//         const color = getRandomColor(); // Generate a random color for each checkbox
-//
-//         fetch(`http://localhost:5000/static/data/${user}.csv`)
-//             .then(response => {
-//                 if (!response.ok) {
-//                     throw new Error(`Failed to fetch ${user}.csv`);
-//                 }
-//                 return response.text();
-//             })
-//             .then(csvData => {
-//                 // Parse the CSV data
-//                 const rows = csvData.split('\n');
-//                 for (let i = 1; i < rows.length; i++) { // Start from index 1 to skip header row
-//                     const columns = rows[i].split(',');
-//                     const latitude = parseFloat(columns[7]); // Assuming latitude is in first column
-//                     const longitude = parseFloat(columns[8]); // Assuming longitude is in second column
-//                     if (!isNaN(latitude) && !isNaN(longitude)) { // Check if latitude and longitude are valid numbers
-//                         // Create a marker for the asset location with the specified color
-//                         const assetMarker = L.marker([latitude, longitude], {
-//                             icon: createMarkerIcon(color) // Pass the color to the createMarkerIcon function
-//                         }).addTo(map);
-//                         // Optionally, you can customize the marker icon or add a tooltip
-//                         // assetMarker.setIcon(...);
-//                         assetMarker.bindTooltip(checkbox.name);
-//
-//                         // Add the marker to the assetMarkers layer group
-//                         assetMarkers.addLayer(assetMarker);
-//                     }
-//                 }
-//                 // Add the layer group containing asset markers to the map
-//                 map.addLayer(assetMarkers);
-//             })
-//             .catch(error => {
-//                 console.error(`Error loading asset data for ${user}.csv:`, error);
-//             });
-//     });
-// }
-
-
-
-
-
-// async function loadAssets() {
-//     const checkboxes = document.querySelectorAll('.assets-checkbox:checked'); // Get all checked checkboxes
-//
-//     // Clear previous markers before fetching and adding new ones
-//     assetMarkers.clearLayers();
-//     console.log("Previous markers cleared.");
-//
-//     // Iterate over each checked checkbox
-//     for (const checkbox of checkboxes) {
-//         const user = checkbox.value; // Get the value of the checkbox (which corresponds to the user name)
-//         const color = getRandomColor(); // Generate a random color for each checkbox
-//         const userMarkers = L.layerGroup();
-//
-//
-//         let markerCount = 0; // Counter to track how many markers are added for this user
-//
-//
-//         try {
-//             const response = await fetch(`http://localhost:5000/static/data/${user}.csv`);
-//             if (!response.ok) {
-//                 throw new Error(`Failed to fetch ${user}.csv`);
-//             }
-//             const csvData = await response.text();
-//
-//             // Parse the CSV data
-//             const rows = csvData.split('\n');
-//             for (let i = 0; i < rows.length; i++) { // Start from index 1 to skip header row
-//                 const row = rows[i];
-//                 const columns = row.split(',');
-//                 const latitude = parseFloat(columns[7]); // Assuming latitude is in first column
-//                 const longitude = parseFloat(columns[8]); // Assuming longitude is in second column
-//
-//                 if (!isNaN(latitude) && !isNaN(longitude)) { // Check if latitude and longitude are valid numbers
-//                     // Remove previous markers before adding a new one
-//                     assetMarkers.clearLayers();
-//                     console.log("Previous markers cleared.");
-//
-//                     // userMarkers.clearLayers();
-//                     // console.log("Previous markers cleared for", user);
-//
-//                     // Create a marker for the asset location with the specified color
-//                     const assetMarker = L.marker([latitude, longitude], {
-//                         icon: createMarkerIcon(color) // Pass the color to the createMarkerIcon function
-//                     }).addTo(map);
-//                     // Optionally, you can customize the marker icon or add a tooltip
-//                     // assetMarker.setIcon(...);
-//                     assetMarker.bindTooltip(checkbox.name);
-//
-//                     // Add the marker to the assetMarkers layer group
-//                     assetMarkers.addLayer(assetMarker);
-//                     // userMarkers.addLayer(assetMarker)
-//                     markerCount++;
-//                     console.log(`Marker added for ${user}. - ${markerCount}`);
-//
-//                     // Wait for 1 second before removing the marker
-//                     await new Promise(resolve => setTimeout(resolve, 20));
-//
-//                     // Remove the marker after 1 second
-//                     // assetMarkers.removeLayer(assetMarker);
-//                     assetMarker.remove();
-//                     console.log(`Marker removed for ${user}. - ${markerCount}`);
-//
-//                 }
-//
-//             }
-//         } catch (error) {
-//             console.error(`Error loading asset data for ${user}.csv:`, error);
-//         }
-//     }
-//
-//     // Add the layer group containing asset markers to the map
-//     map.addLayer(assetMarkers);
-//     console.log("All markers added to the map.");
-// }
-
-
-
-
-//// this code displays N number of files very last positions all together
-
-// async function loadAssets() {
-//     const checkboxes = document.querySelectorAll('.assets-checkbox:checked'); // Get all checked checkboxes
-//
-//     // Clear previous markers before fetching and adding new ones
-//     assetMarkers.clearLayers();
-//     console.log("Previous markers cleared.");
-//
-//     // Iterate over each checked checkbox
-//     for (const checkbox of checkboxes) {
-//         const user = checkbox.value; // Get the value of the checkbox (which corresponds to the user name)
-//         const color = getRandomColor(); // Generate a random color for each checkbox
-//
-//         try {
-//             const response = await fetch(`http://localhost:5000/static/data/${user}.csv`);
-//             if (!response.ok) {
-//                 throw new Error(`Failed to fetch ${user}.csv`);
-//             }
-//             const csvData = await response.text();
-//
-//             // Parse the CSV data
-//             const rows = csvData.split('\n');
-//             let lastLatitude, lastLongitude; // Variables to store the last marker's coordinates
-//             for (let i = 0; i < rows.length; i++) { // Start from index 1 to skip header row
-//                 const row = rows[i];
-//                 const columns = row.split(',');
-//                 const latitude = parseFloat(columns[7]); // Assuming latitude is in first column
-//                 const longitude = parseFloat(columns[8]); // Assuming longitude is in second column
-//
-//                 if (!isNaN(latitude) && !isNaN(longitude)) { // Check if latitude and longitude are valid numbers
-//                     // Update the last marker's coordinates
-//                     lastLatitude = latitude;
-//                     lastLongitude = longitude;
-//                 }
-//             }
-//
-//             // Create a marker for the last known position of the current file
-//             if (!isNaN(lastLatitude) && !isNaN(lastLongitude)) {
-//                 const lastMarker = L.marker([lastLatitude, lastLongitude], {
-//                     icon: createMarkerIcon(color) // Pass the color to the createMarkerIcon function
-//                 });
-//                 // Optionally, you can customize the marker icon or add a tooltip
-//                 // lastMarker.setIcon(...);
-//                 lastMarker.bindTooltip(`${user} (Last Known Position)`);
-//
-//                 // Add the last marker to the assetMarkers layer group
-//                 assetMarkers.addLayer(lastMarker);
-//                 console.log(`Last known position marker added for ${user}.`);
-//             } else {
-//                 console.log(`No valid position found for ${user}.`);
-//             }
-//         } catch (error) {
-//             console.error(`Error loading asset data for ${user}.csv:`, error);
-//         }
-//     }
-//
-//     // Add the layer group containing all last position markers to the map
-//     map.addLayer(assetMarkers);
-//     console.log("All last position markers added to the map.");
-// }
-
-
-
-
-
-// async function loadAssets() {
-//     const checkboxes = document.querySelectorAll('.assets-checkbox:checked'); // Get all checked checkboxes
-//
-//     // Clear previous markers before fetching and adding new ones
-//     assetMarkers.clearLayers();
-//     console.log("Previous markers cleared.");
-//
-//     // Iterate over each checked checkbox
-//     for (const checkbox of checkboxes) {
-//         const user = checkbox.value; // Get the value of the checkbox (which corresponds to the user name)
-//         const color = getRandomColor(); // Generate a random color for each checkbox
-//
-//         try {
-//             const response = await fetch(`http://localhost:5000/static/data/${user}.csv`);
-//             if (!response.ok) {
-//                 throw new Error(`Failed to fetch ${user}.csv`);
-//             }
-//             const csvData = await response.text();
-//
-//             // Parse the CSV data
-//             const rows = csvData.split('\n');
-//
-//             let lastLatitude, lastLongitude, lastScanTime; // Variables to store the last marker's coordinates and scan time
-//             for (let i = 0; i < rows.length; i++) { // Start from index 1 to skip header row
-//                 const row = rows[i];
-//                 const columns = row.split(',');
-//                 const latitude = parseFloat(columns[7]); // Assuming latitude is in first column
-//                 const longitude = parseFloat(columns[8]); // Assuming longitude is in second column
-//
-//                 if (!isNaN(latitude) && !isNaN(longitude)) { // Check if latitude and longitude are valid numbers
-//                     // Update the last marker's coordinates and scan time
-//                     lastLatitude = latitude;
-//                     lastLongitude = longitude;
-//                     lastScanTime = new Date(); // Get the current system time
-//                 }
-//             }
-//
-//             // Create a marker for the last known position of the current file
-//             if (!isNaN(lastLatitude) && !isNaN(lastLongitude)) {
-//                 const lastMarker = L.marker([lastLatitude, lastLongitude], {
-//                     icon: createMarkerIcon(color) // Pass the color to the createMarkerIcon function
-//                 });
-//                 // Optionally, you can customize the marker icon or add a tooltip
-//                 // lastMarker.setIcon(...);
-//                 lastMarker.bindTooltip(`${user} (Last Known Position - ${lastScanTime.toLocaleString()})`);
-//
-//                 // Add the last marker to the assetMarkers layer group
-//                 assetMarkers.addLayer(lastMarker);
-//                 console.log(`Last known position marker added for ${user} at ${lastScanTime}.`);
-//             } else {
-//                 console.log(`No valid position found for ${user}.`);
-//             }
-//         } catch (error) {
-//             console.error(`Error loading asset data for ${user}.csv:`, error);
-//         }
-//     }
-//
-//     // Add the layer group containing all last position markers to the map
-//     map.addLayer(assetMarkers);
-//     console.log("All last position markers added to the map.");
-//
-//         // Display the last scanned times on the asset page
-//     const lastScanTimesString = lastScanTimes.join(', ');
-//     console.log("Last scanned times:", lastScanTimesString);
-// }
-
-
-
-
-
-
-////####below method is working
-// async function loadAssets() {
-//     const checkboxes = document.querySelectorAll('.assets-checkbox:checked'); // Get all checked checkboxes
-//
-//     // Clear previous markers before fetching and adding new ones
-//     assetMarkers.clearLayers();
-//     console.log("Previous markers cleared.");
-//
-//     // Array to store last scan times for each user
-//     const lastScanTimes = [];
-//
-//     // Iterate over each checked checkbox
-//     for (const checkbox of checkboxes) {
-//         const user = checkbox.value; // Get the value of the checkbox (which corresponds to the user name)
-//         const color = getRandomColor(); // Generate a random color for each checkbox
-//
-//         try {
-//             const response = await fetch(`http://localhost:5000/static/data/${user}.csv`);
-//             if (!response.ok) {
-//                 throw new Error(`Failed to fetch ${user}.csv`);
-//             }
-//             const csvData = await response.text();
-//
-//             // Parse the CSV data
-//             const rows = csvData.split('\n');
-//
-//             let lastLatitude, lastLongitude, lastScanTime; // Variables to store the last marker's coordinates and scan time
-//             for (let i = 0; i < rows.length; i++) { // Start from index 1 to skip header row
-//                 const row = rows[i];
-//                 const columns = row.split(',');
-//                 const latitude = parseFloat(columns[7]); // Assuming latitude is in first column
-//                 const longitude = parseFloat(columns[8]); // Assuming longitude is in second column
-//
-//                 if (!isNaN(latitude) && !isNaN(longitude)) { // Check if latitude and longitude are valid numbers
-//                     // Update the last marker's coordinates and scan time
-//                     lastLatitude = latitude;
-//                     lastLongitude = longitude;
-//                     lastScanTime = new Date(); // Get the current system time
-//                 }
-//             }
-//
-//             // Create a marker for the last known position of the current file
-//             if (!isNaN(lastLatitude) && !isNaN(lastLongitude)) {
-//                 const lastMarker = L.marker([lastLatitude, lastLongitude], {
-//                     icon: createMarkerIcon(color) // Pass the color to the createMarkerIcon function
-//                 });
-//                 // Optionally, you can customize the marker icon or add a tooltip
-//                 // lastMarker.setIcon(...);
-//                 lastMarker.bindTooltip(`${user} (Last Known Position - ${lastScanTime.toLocaleString()})`);
-//
-//                 // Add the last marker to the assetMarkers layer group
-//                 assetMarkers.addLayer(lastMarker);
-//                 console.log(`Last known position marker added for ${user} at ${lastScanTime}.`);
-//             } else {
-//                 console.log(`No valid position found for ${user}.`);
-//             }
-//
-//             // Store the last scan time for the current user
-//             lastScanTimes.push(`${user}: ${lastScanTime.toLocaleString()}`);
-//
-//         } catch (error) {
-//             console.error(`Error loading asset data for ${user}.csv:`, error);
-//         }
-//     }
-//
-//     // Add the layer group containing all last position markers to the map
-//     map.addLayer(assetMarkers);
-//     console.log("All last position markers added to the map.");
-//
-//     // Display the last scanned times on the asset page
-//     const lastScanTimesString = lastScanTimes.join(',\n');
-//     console.log("Last scanned times:", lastScanTimesString);
-//
-//     // Update HTML container with last scan times
-//     const lastScanTimesContainer = document.getElementById('lastScanTimesContainer');
-//     if (lastScanTimesContainer) {
-//         // Clear existing content
-//         lastScanTimesContainer.innerHTML = '';
-//
-//         // Split the string by newline characters and create a div for each entry
-//         lastScanTimesString.split('\n').forEach(entry => {
-//             const div = document.createElement('div');
-//             div.textContent = entry;
-//             lastScanTimesContainer.appendChild(div);
-//         });
-//     } else {
-//         console.error("Error: Could not find lastScanTimesContainer element in HTML.");
-//     }
-//
-//     //     // Save last scanned times to localStorage
-//     // localStorage.setItem('lastScanTimes', JSON.stringify(lastScanTimes));
-//     //
-//     // // Redirect to asset.html
-//     // window.location.href = 'asset.html';
-//
-//     // // Assuming csvData is your CSV data as a string
-//     // localStorage.setItem('csvData', csvData);
-//     // window.location.href = 'asset.html';
-//
-//     // <a href="/assets?file=data_1.csv">View Asset Data</a>
-//
-//
-// }
-
-
-
-
-
-// async function loadAssets() {
-//     const checkboxes = document.querySelectorAll('.assets-checkbox:checked'); // Get all checked checkboxes
-//
-//     // Clear previous markers before fetching and adding new ones
-//     assetMarkers.clearLayers();
-//     console.log("Previous markers cleared.");
-//
-//     // Array to store last scan times for each user
-//     const lastScanTimes = [];
-//
-//     // Iterate over each checked checkbox
-//     for (const checkbox of checkboxes) {
-//         const user = checkbox.value; // Get the value of the checkbox (which corresponds to the user name)
-//         const color = getRandomColor(); // Generate a random color for each checkbox
-//
-//         try {
-//             const response = await fetch(`http://localhost:5000/static/data/${user}.csv`);
-//             if (!response.ok) {
-//                 throw new Error(`Failed to fetch ${user}.csv`);
-//             }
-//             const csvData = await response.text();
-//
-//             // Parse the CSV data
-//             const rows = csvData.split('\n');
-//
-//             let lastLatitude, lastLongitude, lastScanTime; // Variables to store the last marker's coordinates and scan time
-//             for (let i = 0; i < rows.length; i++) { // Start from index 1 to skip header row
-//                 const row = rows[i];
-//                 const columns = row.split(',');
-//                 const latitude = parseFloat(columns[7]); // Assuming latitude is in first column
-//                 const longitude = parseFloat(columns[8]); // Assuming longitude is in second column
-//
-//                 if (!isNaN(latitude) && !isNaN(longitude)) { // Check if latitude and longitude are valid numbers
-//                     // Update the last marker's coordinates and scan time
-//                     lastLatitude = latitude;
-//                     lastLongitude = longitude;
-//                     lastScanTime = new Date(); // Get the current system time
-//                 }
-//             }
-//
-//             // Create a marker for the last known position of the current file
-//             if (!isNaN(lastLatitude) && !isNaN(lastLongitude)) {
-//                 const lastMarker = L.marker([lastLatitude, lastLongitude], {
-//                     icon: createMarkerIcon(color) // Pass the color to the createMarkerIcon function
-//                 });
-//                 // Optionally, you can customize the marker icon or add a tooltip
-//                 // lastMarker.setIcon(...);
-//                 lastMarker.bindTooltip(`${user} (Last Known Position - ${lastScanTime.toLocaleString()})`);
-//
-//                 // Add the last marker to the assetMarkers layer group
-//                 assetMarkers.addLayer(lastMarker);
-//                 console.log(`Last known position marker added for ${user} at ${lastScanTime}.`);
-//             } else {
-//                 console.log(`No valid position found for ${user}.`);
-//             }
-//
-//             // Store the last scan time for the current user
-//             // lastScanTimes.push(`${user}: ${lastScanTime.toLocaleString()}`);
-//             // lastScanTimes.push(`${user};${lastScanTime.toLocaleDateString()}-${lastScanTime.toLocaleTimeString()}`);
-//             // Store the last scan time for the current user
-//             const formattedTime = `${lastScanTime.getFullYear()}-${(lastScanTime.getMonth() + 1).toString().padStart(2, '0')}-${lastScanTime.getDate().toString().padStart(2, '0')} ${lastScanTime.getHours().toString().padStart(2, '0')}:${lastScanTime.getMinutes().toString().padStart(2, '0')}:${lastScanTime.getSeconds().toString().padStart(2, '0')}`;
-//             lastScanTimes.push(`${user};${formattedTime}`);
-//
-//
-//
-//
-//         } catch (error) {
-//             console.error(`Error loading asset data for ${user}.csv:`, error);
-//         }
-//     }
-//
-//     // Add the layer group containing all last position markers to the map
-//     map.addLayer(assetMarkers);
-//     console.log("All last position markers added to the map.");
-//
-//     // Save last scanned times to localStorage
-//     localStorage.setItem('lastScanTimes', JSON.stringify(lastScanTimes));
-//
-//     // Display the last scanned times on the current page
-//     const lastScanTimesString = lastScanTimes.join(',\n');
-//     console.log("Last scanned times:", lastScanTimesString);
-//
-//     // Update HTML container with last scan times
-//     const lastScanTimesContainer = document.getElementById('lastScanTimesContainer');
-//     if (lastScanTimesContainer) {
-//         // Clear existing content
-//         lastScanTimesContainer.innerHTML = '';
-//
-//         // Split the string by newline characters and create a div for each entry
-//         lastScanTimesString.split('\n').forEach(entry => {
-//             const div = document.createElement('div');
-//             div.textContent = entry;
-//             lastScanTimesContainer.appendChild(div);
-//         });
-//     } else {
-//         console.error("Error: Could not find lastScanTimesContainer element in HTML.");
-//     }
-// }
-
-
-
-// async function loadAssets() {
-//     const checkboxes = document.querySelectorAll('.assets-checkbox:checked'); // Get all checked checkboxes
-//
-//     // Clear previous markers before fetching and adding new ones
-//     assetMarkers.clearLayers();
-//     console.log("Previous markers cleared.");
-//
-//     // Array to store last scan times for each user
-//     const lastScanTimes = [];
-//
-//     // Iterate over each checked checkbox
-//     for (const checkbox of checkboxes) {
-//         const user = checkbox.value; // Get the value of the checkbox (which corresponds to the user name)
-//         const color = getRandomColor(); // Generate a random color for each checkbox
-//
-//         try {
-//             const response = await fetch(`http://localhost:5000/static/data/${user}.csv`);
-//             if (!response.ok) {
-//                 throw new Error(`Failed to fetch ${user}.csv`);
-//             }
-//             const csvData = await response.text();
-//
-//             // Parse the CSV data
-//             const rows = csvData.split('\n');
-//
-//             // Display all positions at a slow rate
-//             for (let i = 0; i < rows.length; i++) { // Start from index 1 to skip header row
-//                 const row = rows[i];
-//                 const columns = row.split(',');
-//                 const latitude = parseFloat(columns[7]); // Assuming latitude is in first column
-//                 const longitude = parseFloat(columns[8]); // Assuming longitude is in second column
-//
-//                 if (!isNaN(latitude) && !isNaN(longitude)) { // Check if latitude and longitude are valid numbers
-//                     // Create a marker for each position found in the CSV data
-//                     const marker = L.marker([latitude, longitude], {
-//                         icon: createMarkerIcon(color) // Pass the color to the createMarkerIcon function
-//                     });
-//                     marker.bindTooltip(`${user} (Position)`);
-//                     assetMarkers.addLayer(marker);
-//                     console.log(`Position marker added for ${user} at (${latitude}, ${longitude}).`);
-//
-//                     // Wait for a short delay to display each position
-//                     await new Promise(resolve => setTimeout(resolve, 1000)); // Adjust the delay time as needed
-//                 }
-//             }
-//
-//             // Store the last scan time for the current user
-//             const lastScanTime = new Date(); // Get the current system time
-//             const formattedTime = `${lastScanTime.getFullYear()}-${(lastScanTime.getMonth() + 1).toString().padStart(2, '0')}-${lastScanTime.getDate().toString().padStart(2, '0')} ${lastScanTime.getHours().toString().padStart(2, '0')}:${lastScanTime.getMinutes().toString().padStart(2, '0')}:${lastScanTime.getSeconds().toString().padStart(2, '0')}`;
-//             lastScanTimes.push(`${user};${formattedTime}`);
-//
-//         } catch (error) {
-//             console.error(`Error loading asset data for ${user}.csv:`, error);
-//         }
-//     }
-//
-//     // Add the layer group containing all position markers to the map
-//     map.addLayer(assetMarkers);
-//     console.log("All position markers added to the map.");
-//
-//     // Save last scanned times to localStorage
-//     localStorage.setItem('lastScanTimes', JSON.stringify(lastScanTimes));
-//
-//     // Display only the last position markers on the map
-//     showOnlyLastPositions();
-//
-//     // Display the last scanned times on the current page
-//     const lastScanTimesString = lastScanTimes.join(',\n');
-//     console.log("Last scanned times:", lastScanTimesString);
-//
-//     // Update HTML container with last scan times
-//     const lastScanTimesContainer = document.getElementById('lastScanTimesContainer');
-//     if (lastScanTimesContainer) {
-//         // Clear existing content
-//         lastScanTimesContainer.innerHTML = '';
-//
-//         // Split the string by newline characters and create a div for each entry
-//         lastScanTimesString.split('\n').forEach(entry => {
-//             const div = document.createElement('div');
-//             div.textContent = entry;
-//             lastScanTimesContainer.appendChild(div);
-//         });
-//     } else {
-//         console.error("Error: Could not find lastScanTimesContainer element in HTML.");
-//     }
-// }
-//
-// // Function to show only the last position markers on the map
-// function showOnlyLastPositions() {
-//     // Iterate over all layers in the assetMarkers layer group
-//     assetMarkers.eachLayer(marker => {
-//         // Remove all markers except the last one
-//         if (marker !== assetMarkers.getLayers()[assetMarkers.getLayers().length - 1]) {
-//             assetMarkers.removeLayer(marker);
-//         }
-//     });
-//     console.log("Only last position markers displayed on the map.");
-// }
-
-
-
-async function loadAssets() {
-    const checkboxes = document.querySelectorAll('.assets-checkbox:checked'); // Get all checked checkboxes
-
-    // Clear previous markers before fetching and adding new ones
-    assetMarkers.clearLayers();
-    console.log("Previous markers cleared.");
-
-    // Array to store last scan times for each user
-    const lastScanTimes = [];
-
-    // Iterate over each checked checkbox
-    for (const checkbox of checkboxes) {
-        const user = checkbox.value; // Get the value of the checkbox (which corresponds to the user name)
-        const color = getRandomColor(); // Generate a random color for each checkbox
-
-        try {
-            const response = await fetch(`http://localhost:5000/static/data/${user}.csv`);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch ${user}.csv`);
-            }
-            const csvData = await response.text();
-
-            // Parse the CSV data
-            const rows = csvData.split('\n');
-
-            // Display all positions at a slow rate
-            for (let i = 0; i < rows.length; i++) { // Start from index 1 to skip header row
-                const row = rows[i];
-                const columns = row.split(',');
-                const latitude = parseFloat(columns[7]); // Assuming latitude is in first column
-                const longitude = parseFloat(columns[8]); // Assuming longitude is in second column
-
-                if (!isNaN(latitude) && !isNaN(longitude)) { // Check if latitude and longitude are valid numbers
-                    // Create a marker for each position found in the CSV data
-                    const marker = L.marker([latitude, longitude], {
-                        icon: createMarkerIcon(color) // Pass the color to the createMarkerIcon function
-                    });
-                    marker.bindTooltip(`${user} (Position)`);
-                    assetMarkers.addLayer(marker);
-                    console.log(`Position marker added for ${user} at (${latitude},${longitude}).`);
-
-                    // Remove all markers except the last one
-                    removePreviousMarkers();
-
-                    // Wait for a short delay to display each position
-                    await new Promise(resolve => setTimeout(resolve, 800)); // Adjust the delay time as needed
-                }
-            }
-
-            // Store the last scan time for the current user
-            const lastScanTime = new Date(); // Get the current system time
-            const formattedTime = `${lastScanTime.getFullYear()}-${(lastScanTime.getMonth() + 1).toString().padStart(2, '0')}-${lastScanTime.getDate().toString().padStart(2, '0')} ${lastScanTime.getHours().toString().padStart(2, '0')}:${lastScanTime.getMinutes().toString().padStart(2, '0')}:${lastScanTime.getSeconds().toString().padStart(2, '0')}`;
-            lastScanTimes.push(`${user};${formattedTime}`);
-
-        } catch (error) {
-            console.error(`Error loading asset data for ${user}.csv:`, error);
-        }
-    }
-
-    // Add the layer group containing all position markers to the map
-    map.addLayer(assetMarkers);
-    console.log("All position markers added to the map.");
-
-    // Save last scanned times to localStorage
-    localStorage.setItem('lastScanTimes', JSON.stringify(lastScanTimes));
-
-    // Display the last scanned times on the current page
-    const lastScanTimesString = lastScanTimes.join(',\n');
-    console.log("Last scanned times:", lastScanTimesString);
-
-    // Update HTML container with last scan times
-    const lastScanTimesContainer = document.getElementById('lastScanTimesContainer');
-    if (lastScanTimesContainer) {
-        // Clear existing content
-        lastScanTimesContainer.innerHTML = '';
-
-        // Split the string by newline characters and create a div for each entry
-        lastScanTimesString.split('\n').forEach(entry => {
-            const div = document.createElement('div');
-            div.textContent = entry;
-            lastScanTimesContainer.appendChild(div);
-        });
-    } else {
-        console.error("Error: Could not find lastScanTimesContainer element in HTML.");
-    }
-}
 
 // Function to remove all markers except the last one
 function removePreviousMarkers() {
@@ -1792,245 +833,23 @@ function removePreviousMarkers() {
 
 
 
+function createDropdownForLiveFeedAsset(totalFiles) {
+    var dropdownContainer = document.getElementById('dropdown_LiveFeedAssetSection');
+    dropdownContainer.innerHTML = '';
 
-
-
-
-
-// Attach the loadAssets function to the click event of the "Assets" button
-// document.getElementById('assetButton').addEventListener('click', loadAssets);
-
-// Function to clear all assets from the map
-function clearAssets() {
-    // Remove all asset markers from the map
-    assetMarkers.clearLayers();
-
-
-    // Clear the last scanned times display
-    const lastScanTimesContainer = document.getElementById('lastScanTimesContainer');
-    if (lastScanTimesContainer) {
-        lastScanTimesContainer.textContent = '';
-    } else {
-        console.error("Error: Could not find lastScanTimesContainer element in HTML.");
-    }
-
-
-    // Uncheck all checked checkboxes
-    const checkboxes = document.querySelectorAll('.assets-checkbox:checked');
-    checkboxes.forEach(checkbox => {
-        checkbox.checked = false;
-    });
-
-}
-
-// Attach the clearAssets function to a button or event to trigger it
-document.getElementById('clearAssetsButton').addEventListener('click', clearAssets);
-
-
-
-
-
-
-
-
-
-
-// LivedFeed Asset Checkboxes
-
-function createCheckboxesForLiveFeedAsset(totalFiles) {
-    var checkboxContainer = document.getElementById('checkboxes_LiveFeedAssetSection');
-    checkboxContainer.innerHTML = '';
+    var select = document.createElement("select");
+    select.id = "asset-select"; // Set an ID for the select element
 
     for (var i = 1; i <= totalFiles; i++) {
         var user = `data_${i}`;
-        const label = document.createElement("label");
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.id = `checkbox_${user}`;
-        checkbox.name = user;
-        checkbox.className = 'checkbox-LiveFeedAssets'; // Corrected class name here
-        checkbox.value = user;  // Set the user name as the value
-
-        const textContent = document.createTextNode(user);
-
-        label.appendChild(checkbox);
-        label.appendChild(textContent);
-
-        checkboxContainer.appendChild(label);
+        var option = document.createElement("option");
+        option.value = user; // Set the value attribute of the option
+        option.text = user; // Set the visible text of the option
+        select.appendChild(option); // Append the option to the select element
     }
 
-    // Attach the handleCheckboxChange function to checkbox change events
-    var checkboxes = document.getElementsByClassName('checkbox-LiveFeedAssets'); // Corrected class name here
-    for (var i = 0; i < checkboxes.length; i++) {
-        checkboxes[i].addEventListener('change', handleCheckboxChange);
-    }
+    dropdownContainer.appendChild(select); // Append the select element to the dropdown container
 }
-
-
-
-
-//
-// async function StartLiveFeedAsset() {
-//     const checkboxes = document.querySelectorAll('#LiveFeedAssetSection input[type="checkbox"]:checked');
-//
-//     if (checkboxes.length === 0) {
-//         console.log("No assets selected.");
-//         return;
-//     }
-//
-//     // Clear previous markers before fetching and adding new ones
-//     assetMarkers.clearLayers();
-//     console.log("Previous markers cleared.");
-//
-//     // Iterate over each checked checkbox
-//     for (const checkbox of checkboxes) {
-//         const user = checkbox.value;
-//         const color = getRandomColor();
-//
-//         try {
-//             const response = await fetch(`http://localhost:5000/static/data/${user}.csv`);
-//             if (!response.ok) {
-//                 throw new Error(`Failed to fetch ${user}.csv`);
-//             }
-//             const csvData = await response.text();
-//             const rows = csvData.split('\n');
-//
-//             // Display all positions at a slow rate
-//             for (let i = 0; i < rows.length; i++) {
-//                 if (paused) {
-//                     await new Promise(resolve => setTimeout(resolve, 500)); // Delay for a paused live feed
-//                     continue; // Skip adding new markers if paused
-//                 }
-//
-//                 const row = rows[i];
-//                 const columns = row.split(',');
-//                 const latitude = parseFloat(columns[7]);
-//                 const longitude = parseFloat(columns[8]);
-//
-//                 if (!isNaN(latitude) && !isNaN(longitude)) {
-//                     const marker = L.marker([latitude, longitude], {
-//                         icon: createMarkerIcon(color)
-//                     });
-//                     marker.bindTooltip(`${user} (Position)`);
-//                     assetMarkers.addLayer(marker);
-//                     console.log(`Position marker added for ${user} at (${latitude}, ${longitude}).`);
-//                 }
-//                 await new Promise(resolve => setTimeout(resolve, 800)); // Delay between each position
-//             }
-//
-//             // Display the markers on the map after processing each user's data
-//             map.addLayer(assetMarkers);
-//             console.log("All position markers added to the map.");
-//         } catch (error) {
-//             console.error(`Error loading asset data for ${user}.csv:`, error);
-//         }
-//     }
-// }
-//
-//
-//
-//
-//
-//
-// let paused = false; // Flag to control pause/resume state
-//
-// function pauseStop() {
-//     if (paused) {
-//         paused = false; // Resume live feed
-//         console.log("Live feed resumed.");
-//     } else {
-//         paused = true; // Pause live feed
-//         console.log("Live feed paused.");
-//         // Call a function to stop the trajectory (e.g., stopTrajectory())
-//     }
-// }
-
-
-
-
-
-// let paused = false; // Flag to control pause/resume state
-// let currentIndex = 0; // Keep track of the current index in the CSV data
-// let timeoutId; // Store the timeout ID for pausing/resuming
-//
-// async function StartLiveFeedAsset() {
-//     const checkboxes = document.querySelectorAll('#LiveFeedAssetSection input[type="checkbox"]:checked');
-//
-//     if (checkboxes.length === 0) {
-//         console.log("No assets selected.");
-//         return;
-//     }
-//
-//     // Clear previous markers before fetching and adding new ones
-//     assetMarkers.clearLayers();
-//     console.log("Previous markers cleared.");
-//
-//     // Reset the currentIndex when starting a new live feed
-//     currentIndex = 0;
-//
-//     // Iterate over each checked checkbox
-//     for (const checkbox of checkboxes) {
-//         const user = checkbox.value;
-//         const color = getRandomColor();
-//
-//         try {
-//             const response = await fetch(`http://localhost:5000/static/data/${user}.csv`);
-//             if (!response.ok) {
-//                 throw new Error(`Failed to fetch ${user}.csv`);
-//             }
-//             const csvData = await response.text();
-//             const rows = csvData.split('\n');
-//
-//             // Process CSV data
-//             await processCSVData(rows, user, color);
-//         } catch (error) {
-//             console.error(`Error loading asset data for ${user}.csv:`, error);
-//         }
-//     }
-//
-//     // Display the markers on the map after processing all user data
-//     map.addLayer(assetMarkers);
-//     console.log("All position markers added to the map.");
-// }
-//
-// async function processCSVData(rows, user, color) {
-//     return new Promise(async (resolve) => {
-//         for (let i = currentIndex; i < rows.length; i++) {
-//             // Check if the pause button is pressed
-//             while (paused) {
-//                 await new Promise(resolve => setTimeout(resolve, 500)); // Delay for a paused live feed
-//             }
-//
-//             const row = rows[i];
-//             const columns = row.split(',');
-//             const latitude = parseFloat(columns[7]);
-//             const longitude = parseFloat(columns[8]);
-//
-//             if (!isNaN(latitude) && !isNaN(longitude)) {
-//                 const marker = L.marker([latitude, longitude], {
-//                     icon: createMarkerIcon(color)
-//                 });
-//                 marker.bindTooltip(`${user} (Position)`);
-//                 assetMarkers.addLayer(marker);
-//                 console.log(`Position marker added for ${user} at (${latitude}, ${longitude}).`);
-//             }
-//
-//             await new Promise(resolve => setTimeout(resolve, 800)); // Delay between each position
-//
-//             // Update currentIndex after processing each row
-//             currentIndex = i + 1;
-//         }
-//
-//         resolve();
-//     });
-// }
-//
-// function pauseStop() {
-//     paused = !paused; // Toggle the paused state
-//     console.log(paused ? "Live feed paused." : "Live feed resumed.");
-// }
-
-
 
 
 
@@ -2048,12 +867,13 @@ async function StartLiveFeedAsset() {
     // }
     trajectoryActive = true;
 
+    // Retrieve the selected asset from the dropdown
+    const assetSelect = document.getElementById('asset-select');
+    const selectedAsset = assetSelect.value;
 
-
-    const checkboxes = document.querySelectorAll('#LiveFeedAssetSection input[type="checkbox"]:checked');
-
-    if (checkboxes.length === 0) {
-        console.log("No assets selected.");
+    // Check if any asset is selected
+    if (!selectedAsset) {
+        console.log("No asset selected.");
         return;
     }
 
@@ -2064,66 +884,27 @@ async function StartLiveFeedAsset() {
     // Reset the currentIndex when starting a new live feed
     currentIndex = 0;
 
-    // Iterate over each checked checkbox
-    for (const checkbox of checkboxes) {
-        const user = checkbox.value;
-        const color = getRandomColor();
-
-        try {
-            const response = await fetch(`http://localhost:5000/static/data/${user}.csv`);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch ${user}.csv`);
-            }
-            const csvData = await response.text();
-            const rows = csvData.split('\n');
-
-            // Process CSV data
-            await processCSVData(rows, user, color);
-        } catch (error) {
-            console.error(`Error loading asset data for ${user}.csv:`, error);
+    // Fetch and process data for the selected asset
+    const color = getRandomColor();
+    try {
+        const response = await fetch(`http://localhost:5000/static/data/${selectedAsset}.csv`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch ${selectedAsset}.csv`);
         }
+        const csvData = await response.text();
+        const rows = csvData.split('\n');
+
+        // Process CSV data
+        await processCSVData(rows, selectedAsset, color);
+    } catch (error) {
+        console.error(`Error loading asset data for ${selectedAsset}.csv:`, error);
     }
 
-    // Display the markers on the map after processing all user data
+    // Display the markers on the map after processing the asset data
     map.addLayer(assetMarkers);
     console.log("All position markers added to the map.");
 }
 
-
-
-
-
-
-// async function processCSVData(rows, user, color) {
-//     for (let i = currentIndex; i < rows.length; i++) {
-//         // Check if the pause button is pressed
-//         while (paused) {
-//             await delay(500); // Delay for a paused live feed
-//         }
-//
-//         const row = rows[i];
-//         const columns = row.split(',');
-//         const latitude = parseFloat(columns[7]);
-//         const longitude = parseFloat(columns[8]);
-//
-//         if (!isNaN(latitude) && !isNaN(longitude)) {
-//             const marker = L.marker([latitude, longitude], {
-//                 icon: createMarkerIcon(color)
-//             });
-//             marker.bindTooltip(`${user} (Position)`);
-//             assetMarkers.addLayer(marker);
-//             map.addLayer(assetMarkers);
-//
-//             console.log(`Position marker added for ${user} at (${latitude}, ${longitude}).`);
-//         }
-//
-//         // Delay between each position
-//         await delay(400);
-//
-//         // Update currentIndex after processing each row
-//         currentIndex = i + 1;
-//     }
-// }
 
 
 
@@ -2166,6 +947,10 @@ async function processCSVData(rows, user, color) {
 
 
 
+
+
+
+
 function pauseStop() {
     paused = !paused; // Toggle the paused state
     console.log(paused ? "Live feed paused." : "Live feed resumed.");
@@ -2182,73 +967,142 @@ function delay(ms) {
 
 /////aseets starts
 
-
-let assetImageMarker = null; // Store the reference to the asset image marker
+/*
+let assetImageMarker = null;
+let lastLocationData = {}; // Object to store last location data for each dropdown value
 
 async function FindAsset() {
-
     if (assetImageMarker) {
-        // Remove the previous asset image marker if it exists
         map.removeLayer(assetImageMarker);
     }
 
-    // Get the current position from the live feed
     const currentPosition = getCurrentPosition();
 
     if (currentPosition) {
-        // Add the asset image marker at the current position
         const assetImageIcon = L.icon({
-            iconUrl: 'http://localhost:5000/static/img/asset_img.png', // Specify the path to your asset image
-            iconSize: [10, 10], // Adjust the size if needed
-            iconAnchor: [5, 5], // Adjust the anchor if needed
+            iconUrl: 'http://localhost:5000/static/img/asset_img.png',
+            iconSize: [10, 10],
+            iconAnchor: [5, 5],
         });
 
         assetImageMarker = L.marker(currentPosition, {
             icon: assetImageIcon,
         }).addTo(map);
 
-        // Store the last scan time for the current user
-        const lastScanTime = new Date(); // Get the current system time
+        const selectedValue = document.getElementById('asset-select').value;
+        const lastScanTime = new Date();
         const formattedTime = `${lastScanTime.getFullYear()}-${(lastScanTime.getMonth() + 1).toString().padStart(2, '0')}-${lastScanTime.getDate().toString().padStart(2, '0')} ${lastScanTime.getHours().toString().padStart(2, '0')}:${lastScanTime.getMinutes().toString().padStart(2, '0')}:${lastScanTime.getSeconds().toString().padStart(2, '0')}`;
-        const user = document.querySelector('#LiveFeedAssetSection input[type="checkbox"]:checked').value;
-        const latitude = currentPosition.lat;
-        const longitude = currentPosition.lng;
 
-        const userData = {
-            user: user,
+
+        // Save last location data for the selected value
+        lastLocationData[selectedValue] = {
+            user: selectedValue,
             lastScanTime: formattedTime,
-            latitude: latitude,
-            longitude: longitude
+            latitude: currentPosition.lat,
+            longitude: currentPosition.lng
         };
-        assetImageMarker.bindTooltip(`Asset found for ${user} at Lat_Long: ${currentPosition}, Last Scan Time: ${formattedTime}`);
+
+        // Transmit the saved data to the Asset page
+        transmitDataToAssetPage(lastLocationData[selectedValue]);
+
+        localStorage.setItem('lastLiveFeedAssetScanTime', JSON.stringify(lastLocationData[selectedValue]));
 
 
-        // assetImageMarker.bindTooltip(`Asset found at Lat_Long: ${currentPosition}, Last Scan Time: ${formattedTime}`);
-
-        // localStorage.setItem('lastLiveFeedAssetScanTime', JSON.stringify(formattedTime));
-        // localStorage.setItem('lastLiveFeedAssetScanTime', userData);
-        localStorage.setItem('lastLiveFeedAssetScanTime', JSON.stringify(userData));
-
-
-
-        // Display the last scanned times on the current page
-        const lastScanTimesString = localStorage.getItem('lastLiveFeedAssetScanTime');
-
-        // Update HTML container with last scan times
+        // Display last scan time on the current page
+        const lastScanTimesString = `${selectedValue}: ${formattedTime}: ${currentPosition.lat}: ${currentPosition.lng}`;
         const lastLiveFeedAssetScanTimeContainer = document.getElementById('lastLiveFeedAssetScanTimeContainer');
         if (lastLiveFeedAssetScanTimeContainer) {
-            // Clear existing content
             lastLiveFeedAssetScanTimeContainer.innerHTML = '';
-
-            // Create a div for the last scan time entry
             const div = document.createElement('div');
-            div.textContent = lastScanTimesString || 'No last scan time available';
+            div.textContent = lastScanTimesString;
             lastLiveFeedAssetScanTimeContainer.appendChild(div);
         } else {
             console.error("Error: Could not find lastLiveFeedAssetScanTimeContainer element in HTML.");
         }
 
+        console.log("Asset image marker added at current position:", currentPosition);
+    } else {
+        console.log("No position available to mark as asset.");
+    }
+}
 
+function transmitDataToAssetPage(data) {
+    // Transmit data to the Asset page, you can use any appropriate method like AJAX, WebSocket, etc.
+    console.log("Transmitting data to the Asset page:", data);
+}
+
+
+
+
+// Utility function to get the current position from the live feed
+function getCurrentPosition() {
+    const lastMarker = assetMarkers.getLayers()[assetMarkers.getLayers().length - 1];
+    if (lastMarker) {
+        return lastMarker.getLatLng();
+    } else {
+        return null;
+    }
+}
+
+
+*/
+
+///// assets ends
+
+
+let assetImageMarker = null;
+let lastLocationData = {}; // Object to store last location data for each dropdown value
+
+
+async function FindAsset() {
+    const currentPosition = getCurrentPosition();
+
+    if (currentPosition) {
+        const assetImageIcon = L.icon({
+            iconUrl: 'http://localhost:5000/static/img/asset_img.png',
+            iconSize: [10, 10],
+            iconAnchor: [5, 5],
+        });
+
+        if (assetImageMarker) {
+            map.removeLayer(assetImageMarker);
+        }
+
+        assetImageMarker = L.marker(currentPosition, {
+            icon: assetImageIcon,
+        }).addTo(map);
+
+        const selectedValue = document.getElementById('asset-select').value;
+        const lastScanTime = new Date();
+        const formattedTime = `${lastScanTime.getFullYear()}-${(lastScanTime.getMonth() + 1).toString().padStart(2, '0')}-${lastScanTime.getDate().toString().padStart(2, '0')} ${lastScanTime.getHours().toString().padStart(2, '0')}:${lastScanTime.getMinutes().toString().padStart(2, '0')}:${lastScanTime.getSeconds().toString().padStart(2, '0')}`;
+
+        // Initialize array for the selected asset if not already present
+        if (!lastLocationData[selectedValue]) {
+            lastLocationData[selectedValue] = [];
+        }
+
+        // Save new position data to the array for the selected asset
+        lastLocationData[selectedValue].push({
+            user: selectedValue,
+            lastScanTime: formattedTime,
+            latitude: currentPosition.lat,
+            longitude: currentPosition.lng
+        });
+
+        // Save the data to localStorage
+        localStorage.setItem('lastLiveFeedAssetScanTime', JSON.stringify(lastLocationData));
+
+        // Display last scan time on the current page
+        const lastScanTimesString = `${selectedValue}: ${formattedTime}: ${currentPosition.lat}: ${currentPosition.lng}`;
+        const lastLiveFeedAssetScanTimeContainer = document.getElementById('lastLiveFeedAssetScanTimeContainer');
+        if (lastLiveFeedAssetScanTimeContainer) {
+            lastLiveFeedAssetScanTimeContainer.innerHTML = '';
+            const div = document.createElement('div');
+            div.textContent = lastScanTimesString;
+            lastLiveFeedAssetScanTimeContainer.appendChild(div);
+        } else {
+            console.error("Error: Could not find lastLiveFeedAssetScanTimeContainer element in HTML.");
+        }
 
         console.log("Asset image marker added at current position:", currentPosition);
     } else {
@@ -2259,108 +1113,7 @@ async function FindAsset() {
 
 
 
-/*
-let assetImageMarkers = []; // Store the references to the asset image markers
-let assetList = []; // Store the list of assets
-
-async function FindAsset() {
-    // Get the current position from the live feed
-    const currentPosition = getCurrentPosition();
-
-    if (currentPosition) {
-        // Add the asset image marker at the current position
-        const assetImageIcon = L.icon({
-            iconUrl: 'http://localhost:5000/static/img/asset_img.png', // Specify the path to your asset image
-            iconSize: [10, 10], // Adjust the size if needed
-            iconAnchor: [5, 5], // Adjust the anchor if needed
-        });
-
-        const assetImageMarker = L.marker(currentPosition, {
-            icon: assetImageIcon,
-        }).addTo(map);
-
-        // Store the last scan time for the current user
-        const lastScanTime = new Date(); // Get the current system time
-        const formattedTime = `${lastScanTime.getFullYear()}-${(lastScanTime.getMonth() + 1).toString().padStart(2, '0')}-${lastScanTime.getDate().toString().padStart(2, '0')} ${lastScanTime.getHours().toString().padStart(2, '0')}:${lastScanTime.getMinutes().toString().padStart(2, '0')}:${lastScanTime.getSeconds().toString().padStart(2, '0')}`;
-        const user = document.querySelector('#LiveFeedAssetSection input[type="checkbox"]:checked').value;
-        const latitude = currentPosition.lat;
-        const longitude = currentPosition.lng;
-
-        const userData = {
-            user: user,
-            lastScanTime: formattedTime,
-            latitude: latitude,
-            longitude: longitude
-        };
-
-        assetImageMarker.bindTooltip(`Asset found for ${user} at Lat_Long: ${currentPosition}, Last Scan Time: ${formattedTime}`);
-
-        // Add the asset data to the list
-        assetList.push(userData);
-
-        // Add the marker to the array
-        assetImageMarkers.push(assetImageMarker);
-
-        // Update the UI with the asset list
-        updateAssetListUI();
-    } else {
-        console.log("No position available to mark as asset.");
-    }
-}
-
-function updateAssetListUI() {
-    // Get the container for asset list
-    const assetListContainer = document.getElementById('assetListContainer');
-
-    // Clear existing content
-    assetListContainer.innerHTML = '';
-
-    // Create a table element
-    const table = document.createElement('table');
-    table.classList.add('asset-table');
-
-    // Create table headers
-    const headers = ['Asset ID', 'User', 'Last Scan Time', 'Latitude', 'Longitude'];
-    const headerRow = document.createElement('tr');
-    headers.forEach(headerText => {
-        const headerCell = document.createElement('th');
-        headerCell.textContent = headerText;
-        headerRow.appendChild(headerCell);
-    });
-    table.appendChild(headerRow);
-
-    // Create rows for each asset
-    assetList.forEach((asset, index) => {
-        const row = document.createElement('tr');
-        const assetIDCell = document.createElement('td');
-        assetIDCell.textContent = `Asset ${index + 1}`;
-        row.appendChild(assetIDCell);
-
-        // Populate other cells with asset data
-        Object.values(asset).forEach(value => {
-            const cell = document.createElement('td');
-            cell.textContent = value;
-            row.appendChild(cell);
-        });
-
-        table.appendChild(row);
-    });
-
-    // Append the table to the container
-    assetListContainer.appendChild(table);
-}
-
-*/
-
-
-
-
-// Utility function to get the current position from the live feed
 function getCurrentPosition() {
-    // Implement this function based on your current implementation
-    // For example, if you have access to the current position directly, return it
-    // Otherwise, you may need to modify the existing code to store and retrieve the current position
-    // Here, I'm assuming there's some way to get the current position, such as accessing the last added marker
     const lastMarker = assetMarkers.getLayers()[assetMarkers.getLayers().length - 1];
     if (lastMarker) {
         return lastMarker.getLatLng();
@@ -2372,182 +1125,6 @@ function getCurrentPosition() {
 
 
 
-///// assets ends
-
-
-
-
-
-
-
-
-
-// function ClearTrajectory() {
-//     // Remove all asset markers from the map
-//     assetMarkers.clearLayers();
-//
-//     // Remove the asset image marker from the map
-//     if (assetImageMarker) {
-//         map.removeLayer(assetImageMarker);
-//         assetImageMarker = null; // Reset the asset image marker
-//     }
-//
-//     // Reset the pause/stop button
-//     paused = false;
-//
-//
-//     // Uncheck all checked checkboxes
-//     const checkboxes = document.querySelectorAll('#LiveFeedAssetSection input[type="checkbox"]:checked');
-//     checkboxes.forEach(checkbox => {
-//         checkbox.checked = false;
-//     });
-//
-// }
-
-
-// let trajectoryActive = true; // Flag to control trajectory processing
-//
-// async function ClearTrajectory() {
-//     // Remove all asset markers from the map
-//     assetMarkers.clearLayers();
-//
-//     // Remove the asset image marker from the map
-//     if (assetImageMarker) {
-//         map.removeLayer(assetImageMarker);
-//         assetImageMarker = null; // Reset the asset image marker
-//     }
-//
-//     // Reset the pause/stop button
-//     paused = false;
-//
-//     currentIndex = 0;
-//
-//     // Uncheck all checked checkboxes
-//     const checkboxes = document.querySelectorAll('#LiveFeedAssetSection input[type="checkbox"]:checked');
-//     checkboxes.forEach(checkbox => {
-//         checkbox.checked = false;
-//     });
-//
-//     // Start live feed asset again
-//     StartLiveFeedAsset();
-//
-//     await delay(1000); // Adjust the delay time if needed
-//
-//
-//     // Stop trajectory processing
-//     trajectoryActive = false;
-//
-//     console.log("Trajectory cleared.");
-// }
-//
-
-
-
-
-// async function ClearTrajectory() {
-//     console.log("Clearing trajectory...");
-//
-//     // Remove all asset markers from the map
-//     assetMarkers.clearLayers();
-//
-//     // Remove the asset image marker from the map
-//     if (assetImageMarker) {
-//         map.removeLayer(assetImageMarker);
-//         assetImageMarker = null; // Reset the asset image marker
-//     }
-//
-//     // Reset the pause/stop button
-//     paused = false;
-//
-//     currentIndex = 0;
-//
-//     // Uncheck all checked checkboxes
-//     const checkboxes = document.querySelectorAll('#LiveFeedAssetSection input[type="checkbox"]:checked');
-//     checkboxes.forEach(checkbox => {
-//         checkbox.checked = false;
-//     });
-//
-//     // Reset trajectoryActive flag
-//     trajectoryActive = true;
-//
-//     console.log("Starting live feed asset again...");
-//
-//     // Start live feed asset again after a delay
-//     await delay(1000); // Adjust the delay time if needed
-//     await StartLiveFeedAsset(); // Wait for StartLiveFeedAsset to finish
-//
-//     console.log("Trajectory cleared.");
-// }
-
-
-
-// async function ClearTrajectory() {
-//     // Stop trajectory processing
-//     trajectoryActive = false;
-//
-//     // Remove all asset markers from the map
-//     assetMarkers.clearLayers();
-//
-//     // Remove the asset image marker from the map
-//     if (assetImageMarker) {
-//         map.removeLayer(assetImageMarker);
-//         assetImageMarker = null; // Reset the asset image marker
-//     }
-//
-//     // Reset the pause/stop button
-//     paused = false;
-//
-//     // Reset the currentIndex
-//     currentIndex = 0;
-//
-//     // Uncheck all checked checkboxes
-//     const checkboxes = document.querySelectorAll('#LiveFeedAssetSection input[type="checkbox"]:checked');
-//     checkboxes.forEach(checkbox => {
-//         checkbox.checked = false;
-//     });
-//
-//     console.log("Trajectory cleared.");
-// }
-
-
-
-// async function ClearTrajectory() {
-//     console.log("Clearing trajectory...");
-//
-//     // Stop trajectory processing
-//     trajectoryActive = false;
-//
-//     // Remove all asset markers from the map
-//     assetMarkers.clearLayers();
-//
-//     // Remove the asset image marker from the map
-//     if (assetImageMarker) {
-//         map.removeLayer(assetImageMarker);
-//         assetImageMarker = null; // Reset the asset image marker
-//     }
-//
-//     // Reset the pause/stop button
-//     paused = false;
-//
-//     // Reset the currentIndex
-//     currentIndex = 0;
-//
-//     // Uncheck all checked checkboxes
-//     const checkboxes = document.querySelectorAll('#LiveFeedAssetSection input[type="checkbox"]:checked');
-//
-//     checkboxes.forEach(checkbox => {
-//         checkbox.checked = false;
-//     });
-//
-//     console.log("Trajectory cleared.");
-//
-//     console.log("Starting live feed asset again...");
-//
-//     // Start live feed asset again after a delay
-//     await delay(5000); // Adjust the delay time if needed
-//     await StartLiveFeedAsset(); // Wait for StartLiveFeedAsset to finish
-// }
-
 
 
 
@@ -2557,82 +1134,6 @@ async function restartLiveFeedAsset() {
     await StartLiveFeedAsset(); // Wait for StartLiveFeedAsset to finish
 }
 
-// async function ClearTrajectory() {
-//     console.log("Clearing trajectory...");
-//
-//     // Remove all asset markers from the map
-//     assetMarkers.clearLayers();
-//
-//     // Remove the asset image marker from the map
-//     if (assetImageMarker) {
-//         map.removeLayer(assetImageMarker);
-//         assetImageMarker = null; // Reset the asset image marker
-//     }
-//
-//     // Reset the pause/stop button
-//     paused = false;
-//
-//     currentIndex = 0;
-//
-//     // Uncheck all checked checkboxes
-//     const checkboxes = document.querySelectorAll('#LiveFeedAssetSection input[type="checkbox"]:checked');
-//     checkboxes.forEach(checkbox => {
-//         checkbox.checked = false;
-//     });
-//
-//     // Reset trajectoryActive flag
-//     trajectoryActive = true;
-//
-//     console.log("Starting live feed asset again...");
-//
-//     // Call the function to restart the live feed asset
-//     await restartLiveFeedAsset();
-//
-//     console.log("Trajectory cleared.");
-// }
-
-
-
-
-// async function ClearTrajectory() {
-//     console.log("Clearing trajectory...");
-//
-//     // Stop trajectory processing
-//     // trajectoryActive = true;
-//
-//     // Remove all asset markers from the map
-//     assetMarkers.clearLayers();
-//
-//     // Remove the asset image marker from the map
-//     if (assetImageMarker) {
-//         map.removeLayer(assetImageMarker);
-//         assetImageMarker = null; // Reset the asset image marker
-//     }
-//
-//     // Reset the pause/stop button
-//     paused = false;
-//
-//     // Reset the currentIndex
-//     currentIndex = 0;
-//
-//     // Uncheck all checked checkboxes
-//     const checkboxes = document.querySelectorAll('#LiveFeedAssetSection input[type="checkbox"]:checked');
-//
-//     checkboxes.forEach(checkbox => {
-//         checkbox.checked = false;
-//     });
-//
-//     // trajectoryActive = fasle;
-//
-//
-//
-//     console.log("Starting live feed asset again...");
-//
-//     await restartLiveFeedAsset();
-//
-//     console.log("Trajectory cleared.");
-//
-// }
 
 async function ClearTrajectory() {
     console.log("Clearing trajectory...");
@@ -2687,13 +1188,14 @@ var socket = io.connect('http://' + document.domain + ':' + location.port);
 //     document.getElementById('latitude').innerText = data.latitude;
 //     document.getElementById('longitude').innerText = data.longitude;
 //     document.getElementById('floor-number').innerText = data.floorNumber;
+//
 // });
 
 // // Update marker position
 // socket.on('update_map', function (data) {
 //     console.log('Map data updated:', data);
 //     // on initialization marker movement
-//     //marker.setLatLng([data.map.latitude, data.map.longitude]);
+//     // marker.setLatLng([data.map.latitude, data.map.longitude]);
 // });
 
 
@@ -2707,18 +1209,20 @@ socket.on('update_users_info', function (data) {
 
     // this code displays data asap dashboards executes
     // // Update user information
-    // for (var user in data.users) {
-    //     var listItem = document.createElement('li');
-    //     listItem.innerHTML = `<strong>${user}:</strong> ${data.users[user]}`;
-    //     userList.appendChild(listItem);
-    // }
+    for (var user in data.users) {
+        var listItem = document.createElement('li');
+        listItem.innerHTML = `<strong>${user}:</strong> ${data.users[user]}`;
+        userList.appendChild(listItem);
+    }
 });
 
 
 socket.on('number_of_files', function (data) {
     createCheckboxes(data.totalFiles);
-    createCheckboxesForAssets(data.totalFiles)
-    createCheckboxesForLiveFeedAsset(data.totalFiles)
+    // createCheckboxesForAssets(data.totalFiles)
+    // createCheckboxesForLiveFeedAsset(data.totalFiles)
+    createCheckboxesForLiveFeedPlayback(data.totalFiles)
+    createDropdownForLiveFeedAsset(data.totalFiles)
 });
 
 
@@ -2727,8 +1231,10 @@ socket.on('update_users_info_for_checklist', function (data) {
 
     // Call createCheckboxes function with the totalFiles parameter
     createCheckboxes(data.totalFiles);
-    createCheckboxesForAssets(data.totalFiles)
-    createCheckboxesForLiveFeedAsset(data.totalFiles)
+    // createCheckboxesForAssets(data.totalFiles)
+    // createCheckboxesForLiveFeedAsset(data.totalFiles)
+    createCheckboxesForLiveFeedPlayback(data.totalFiles)
+    createDropdownForLiveFeedAsset(data.totalFiles)
 
 });
 

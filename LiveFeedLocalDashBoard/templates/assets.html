@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <h1>Assets Page</h1>
+    <h1>Asset Tracking Dashboard</h1>
 
 
 {#    <div id="map-container" style="position: relative; height: 400px;"> <!-- Ensure the map container has a height -->#}
@@ -97,6 +97,8 @@
 
 
     <div id="lastScanTimesContainer"></div>
+    <button id="clearButton" onclick="clearFields()">Clear</button>
+
 
     <h3>Fetch Data</h3>
 
@@ -499,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
+/*
 document.addEventListener('DOMContentLoaded', function() {
     // Retrieve last scanned times from localStorage
     const lastScanTimeStr = localStorage.getItem('lastLiveFeedAssetScanTime');
@@ -611,13 +613,145 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-
-
-
-
+*/
 </script>
 
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Retrieve last scanned times from localStorage
+    const lastScanTimeStr = localStorage.getItem('lastLiveFeedAssetScanTime');
+
+    // Get the container element
+    const container = document.getElementById('lastScanTimesContainer');
+
+    // Initialize the map
+    const mapContainer = L.map('map-container').setView([51.06516187, -114.144868], 13);
+
+    // Add a tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(mapContainer);
+
+    let markers = []; // Array to hold all markers
+
+    // Function to create and populate the table with data
+    function populateTable(data) {
+        // Create a new table element
+        const table = document.createElement('table');
+        table.classList.add('asset-table'); // Optionally add a CSS class to style the table
+
+        // Create table headers
+        const headers = ['Asset ID', 'User', 'Last Scan Time', 'Latitude', 'Longitude'];
+        const headerRow = document.createElement('tr');
+        headers.forEach(headerText => {
+            const headerCell = document.createElement('th');
+            headerCell.textContent = headerText;
+            headerRow.appendChild(headerCell);
+        });
+        table.appendChild(headerRow);
+
+        // Iterate through each asset and add its positions to the table
+        let assetCounter = 1; // Initialize asset counter
+        for (const assetID in data) {
+            if (data.hasOwnProperty(assetID)) {
+                const positions = data[assetID];
+                positions.forEach(position => {
+                    // Create a row for the data
+                    const dataRow = document.createElement('tr');
+
+                    // Populate cells with data
+                    const assetIDCell = document.createElement('td');
+                    assetIDCell.textContent = assetCounter++; // Incremental asset ID
+                    dataRow.appendChild(assetIDCell);
+
+                    const userCell = document.createElement('td');
+                    userCell.textContent = position.user;
+                    dataRow.appendChild(userCell);
+
+                    const lastScanTimeCell = document.createElement('td');
+                    lastScanTimeCell.textContent = position.lastScanTime;
+                    dataRow.appendChild(lastScanTimeCell);
+
+                    const latitudeCell = document.createElement('td');
+                    latitudeCell.textContent = position.latitude;
+                    dataRow.appendChild(latitudeCell);
+
+                    const longitudeCell = document.createElement('td');
+                    longitudeCell.textContent = position.longitude;
+                    dataRow.appendChild(longitudeCell);
+
+                    // Append the data row to the table
+                    table.appendChild(dataRow);
+                });
+            }
+        }
+
+        // Append the table to the container
+        container.appendChild(table);
+    }
+
+    // Function to add markers to the map
+    function addMarkers(data) {
+        for (const assetID in data) {
+            if (data.hasOwnProperty(assetID)) {
+                const positions = data[assetID];
+                positions.forEach(position => {
+                    // Create a marker for each position
+                    const marker = L.marker([parseFloat(position.latitude), parseFloat(position.longitude)]);
+
+                    // Add a tooltip to the marker showing the user's location
+                    marker.bindTooltip(`User: ${position.user} - Time: ${position.lastScanTime}`);
+
+                    // Add the marker to the map and to the markers array
+                    marker.addTo(mapContainer);
+                    markers.push(marker);
+                });
+            }
+        }
+
+        // Set the view of the map to the first marker's location if available
+        const firstPosition = data[Object.keys(data)[0]][0];
+        if (firstPosition) {
+            mapContainer.setView([parseFloat(firstPosition.latitude), parseFloat(firstPosition.longitude)], 13);
+        }
+    }
+
+    // Initial population of the table and map with data from localStorage
+    if (lastScanTimeStr && typeof lastScanTimeStr === 'string') {
+        const lastLocationData = JSON.parse(lastScanTimeStr);
+        if (lastLocationData && typeof lastLocationData === 'object') {
+            populateTable(lastLocationData);
+            addMarkers(lastLocationData);
+        } else {
+            console.error('No valid last known locations found in localStorage or it is not an object.');
+        }
+    } else {
+        console.error('No last scan time found in localStorage or it is not a string.');
+    }
+
+    // Function to clear all data rows and markers, but keep the table headers intact
+    window.clearFields = function() {
+        // Remove all data rows from the table
+        const table = container.querySelector('table');
+        if (table) {
+            const rows = table.querySelectorAll('tr:not(:first-child)');
+            rows.forEach(row => row.remove());
+        }
+
+        // Remove all markers from the map
+        markers.forEach(marker => mapContainer.removeLayer(marker));
+        markers = [];
+
+        // Clear localStorage
+        localStorage.removeItem('lastLiveFeedAssetScanTime');
+
+        console.log('Fields and markers cleared.');
+    };
+});
+
+
+</script>
 
 
 

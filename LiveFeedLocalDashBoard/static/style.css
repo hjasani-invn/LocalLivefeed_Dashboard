@@ -50,3 +50,55 @@ h1 {
 /*}*/
 
 /*!* Add more styles as needed *!*/
+
+
+
+/*LiveFeed Section*/
+    #LiveFeedPlayBackSection {
+        border: 2px solid #ccc; /* Add border */
+        padding: 20px; /* Add padding */
+        margin-bottom: 20px; /* Add margin */
+    }
+
+    #LiveFeedPlayBackSection button {
+        margin-right: 10px; /* Add margin-right for buttons */
+    }
+
+
+
+/*PlayBack Section*/
+#LiveFeedPlayBackSection {
+    border: 2px solid #ccc; /* Add border */
+    padding: 4px; /* Add padding */
+    margin-bottom: 5px; /* Add margin */
+    margin-top: 5px;
+}
+
+#LiveFeedPlayBackSection h4 {
+    margin-top: 0; /* Remove top margin for h2 */
+}
+
+#checkboxes_LiveFeedPlayBackSection {
+    margin-bottom: 5px; /* Add margin-bottom for checkboxes */
+}
+
+#LiveFeedPlayBackSection button {
+    margin-right: 5px; /* Add margin-right for buttons */
+}
+
+
+
+/*Assets Section*/
+#LiveFeedAssetSection {
+    border: 2px solid #ccc; /* Add border */
+    padding: 4px; /* Add padding */
+    margin-bottom: 5px; /* Add margin */
+}
+
+#LiveFeedAssetSection h4 {
+    margin-top: 0; /* Remove top margin for h2 */
+}
+
+#LiveFeedAssetSection button {
+    margin-right: 5px; /* Add margin-right for buttons */
+}

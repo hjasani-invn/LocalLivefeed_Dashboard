@@ -28,26 +28,25 @@
         <p><strong>Latitude:</strong> <span id="latitude"></span></p>
         <p><strong>Longitude:</strong> <span id="longitude"></span></p>
         <p><strong>Floor Number:</strong> <span id="floor-number"></span></p>
-        <p><strong>Devices/CSVs Form Data Comming:</strong></p>
+        <p><strong>Devices/CSVs Form Data Coming:</strong></p>
         <ul id="user-list"></ul>
     </div>
     <div id="csv-content-container"></div>
+    <h4>PlayBack</h4>
     <div id="user-checkboxes">
         <div id="checkbox-container"></div>
-        <button id="playButton" onclick="togglePlayback()">Play</button>
-        <button id="liveFeedButton" onclick="toggleLiveFeed()">LiveFeed</button>
-        <button id="clearPositionsButton" onclick="clearPositions()">Clear Positions</button>
-
+        <button id="liveFeedButton" onclick="startLiveFeed()">Start Ral Time LiveFeed</button>
+        <button id="pauseResumeLiveFeedBtn" onclick="pauseResumeLiveFeed()">Pause/Resume</button>
+        <button id="clear_liveFeed" onclick="clear_liveFeed()">clear_liveFeed</button>
 {#        <button id="assetButton" onclick="asset()">Assets</button>#}
 
 
     </div>
 
-
     <div id="assets-button-container">
-        <div id="checkbox-container-for-assets"></div>
-        <button id="assetbtn" onclick="loadAssets()">Assets</button>
-        <button id="clearAssetsButton" onclick="clearAssets()">Clear Assets</button>
+        <!--<div id="checkbox-container-for-assets"></div>-->
+        <!--<button id="assetbtn" onclick="loadAssets()">Assets</button>-->
+        <!--<button id="clearAssetsButton" onclick="clearAssets()">Clear Assets</button>-->
 
         <div id="lastScanTimesContainer"></div>
 
@@ -56,14 +55,40 @@
     </div>
 
 
+
+
+{#        <!-- PlayBack Livefeed Section -->#}
+{#    <div id="LiveFeedPlayBackSection">#}
+{#        <div id="checkboxes_LiveFeedPlayBackSection"></div>#}
+{#        <button id="startPlaybackbtn" onclick="startPlayback()">start Playback</button>#}
+{#        <button id="pauseStopPlaybackbtn" onclick="pauseStopPlayback()">pauseStopPlayback</button>#}
+{#    </div>#}
+
+
+
+    <div id="LiveFeedPlayBackSection">
+        <h4>Playback Something Else</h4> <!-- Added text "Playback Section" -->
+    <div id="checkboxes_LiveFeedPlayBackSection">
+        <!-- Checkboxes for playback users will be dynamically generated here -->
+    </div>
+    <button id="startPlaybackbtn" onclick="startPlayback()">Start Playback</button>
+    <button id="pauseResumePlaybackbtn" onclick="pauseResumePlayback()">Pause/Resume Playback</button>
+    <button id="clearPlaybackbtn" onclick="clearPlayback()">Clear Playback</button>
+    </div>
+
+
+
+
+
+
     <!-- Asset Livefeed Section -->
     <div id="LiveFeedAssetSection">
-        <div id="checkboxes_LiveFeedAssetSection"></div>
+        <h4>Assets</h4>
+        <div id="dropdown_LiveFeedAssetSection"></div>
         <button id="LiveFeedAssetBtn" onclick="StartLiveFeedAsset()">Start Livefeed Asset</button>
         <button id="PauseStopBtn" onclick="pauseStop()">Pause / Stop</button>
         <button id="findAssetBtn" onclick="FindAsset()">Find Asset</button>
         <button id="clearTrajectoryBtn" onclick="ClearTrajectory()">Clear Trajectory</button>
-
         <div id="lastLiveFeedAssetScanTimeContainer"></div>
     </div>
 
